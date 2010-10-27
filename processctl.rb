@@ -77,6 +77,7 @@ protected
 
   def get_running_pids
     result = []
+    return @pid if @pid
     if File.file? @pidfile
       pid = File.read @pidfile
       # big long line I stole to kill a pid
