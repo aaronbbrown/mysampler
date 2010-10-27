@@ -2,6 +2,7 @@
 
 require 'optparse'
 require 'processctl.rb'
+require 'mysqlsampler.rb'
 require 'rubygems'
 require 'dbi'
 
@@ -14,78 +15,63 @@ require 'dbi'
 #  TYPE_MAP.default = TYPE_MAP[nil] if TYPE_MAP.default.nil?
 #end
 
-def output_query ( sth, header = false )
-  str = header ?  "Time" : "#{Time.now}" 
-  while row = sth.fetch_array do
-    # output prefix data for sockett
-    # output all the processlist data
-    str += header ? ",#{row[0]}" : ",#{row[1]}"
-  end
-  return str
-end
-
-
 $options = {}
 $options[:dbuser] = nil
 $options[:dbpass] = nil
+$options[:dbhost] = "localhost"
 $options[:dbport] = 3306
 $options[:dbsocket] = nil
 $options[:daemonize] = false
 $options[:pidfile] = Dir.pwd + "/mysample.pid"
 $options[:interval] = 10 #seconds
 $options[:command] = ProcessCtl::STARTCMD
+$options[:format] = "YAML"
 
-
-user  = "root";
-pass  = "n0m0r3181";
-dsn   = "DBI:Mysql:host=localhost;port=3306"
-query = "show global status;"
 
 opts = OptionParser.new
 opts.banner = "Usage $0 [OPTIONS]"
 opts.on("-u", "--user USER", String, "MySQL User" )  { |v|  $options[:dbuser] = v }
 opts.on("-p", "--pass PASSWORD", String, "MySQL Password" )  { |v|  $options[:dbpass] = v }
-opts.on("-P", "--pidfile PIDFILE", String, "PID File (default: #{$options[:pidfile]})" )  { |v|  $options[:pidfile] = v }
-opts.on("-d", "--daemonize", "daemonize process (default: #{$options[:daemonize]}" )  { |v|  $options[:daemonize] = true }
-opts.on("-k", "--command (start|stop|status)", String, "command to pass daemon") {|v| $options[:command] =
-  v }
-opts.on("-h", "--help",  "this message") { puts opts; exit 1}
-opts.parse!
-
-interrupted = false
-trap("INT") { interrupted = true }
-
-DBI.connect(dsn, user, pass) do |dbh|
-  sth = dbh.execute(query) 
-  puts output_query(sth,true) if sth
-  loop do
-    begin
-      sth = dbh.execute(query) 
-      puts output_query(sth) if sth
-    rescue DBI::DatabaseError => e
-      puts "An error occurred"
-      puts "Error code: #{e.err}"
-      puts "Error message: #{e.errstr}"
-      puts "Error SQLSTATE: #{e.state}"
-#    rescue Exception => e
-#     puts e.inspect
-    ensure
-      sth.finish if sth
-    end
-    exit if interrupted
-    sleep 10
+opts.on("-P", "--port PORT", Integer, "MySQL port (default #{$options[:dbport]})" )  { |v|  $options[:dbport] = v }
+opts.on("--pidfile PIDFILE", String, "PID File (default: #{$options[:pidfile]})" )  { |v|  $options[:pidfile] = v }
+opts.on("-H", "--host HOST", String, "MySQL hostname (default: #{$options[:dbhost]})" )  { |v|  $options[:dbhost] = v }
+opts.on("-i", "--interval SECONDS", Integer, "Interval between runs (default: #{$options[:interval]})" )  { |v|  $options[:interval] = v }
+opts.on("-d", "--daemonize", "daemonize process (default: #{$options[:daemonize]})" )  { |v|  $options[:daemonize] = true }
+opts.on("-k", "--command (start|stop|status)", String, "command to pass daemon") do |v|
+  $options[:command] = case v
+    when "stop"
+      ProcessCtl::STOPCMD
+    when "status"
+      ProcessCtl::STATUSCMD
+    when "start"
+      ProcessCtl::STARTCMD
+    else
+      puts opts
+      exit 1
   end
 end
+opts.on("-h", "--help",  "this message") { puts opts; exit 1}
+opts.parse!
 
 pc = ProcessCtl.new
 pc.daemonize = $options[:daemonize]
 pc.pidfile   = $options[:pidfile]
-exit
+
+
+ms = MySQLSampler.new
+ms.user = $options[:dbuser]
+ms.pass = $options[:dbpass]
+ms.host = $options[:dbhost]
+ms.port = $options[:dbport]
+ms.socket = $options[:dbsocket]
+ms.interval = $options[:interval]
+
+
 case $options[:command]
   when ProcessCtl::STOPCMD
-    pc.stop
+    pc.stop { puts "I'm done" }
   when ProcessCtl::STATUSCMD
     exit pc.status
   else
-    exit pc.start { mpl.run  }
+    exit pc.start { ms.run }
 end

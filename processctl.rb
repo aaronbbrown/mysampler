@@ -3,12 +3,17 @@ class ProcessCtl
 
   attr_accessor :pidfile, :daemonize
 
+
   def initialize
     @pidfile = ""
     @daemonize = false
   end
 
+
   def start
+    trap(:INT)     { stop }
+    trap(:SIGTERM) { cleanup }
+
     size = get_running_pids.size
     if size > 0
       puts "Daemon is already running"
@@ -37,13 +42,19 @@ class ProcessCtl
   end
 
   def stop
+    # call user code if defined
+    begin 
+      yield 
+    rescue
+    end
     get_running_pids.each do |pid|
       puts "Killing pid #{pid}"
       Process.kill :SIGTERM, pid
+      # can't do anything below here.  Process is dead
     end
-    File.delete(@pidfile) if File.file?(@pidfile)
     return 0
   end
+
   # returns the exit status (1 if not running, 0 if running)
   def status
     size = get_running_pids.size
@@ -52,6 +63,11 @@ class ProcessCtl
   end
 
 protected
+  def cleanup
+    File.delete(@pidfile) if File.file?(@pidfile) 
+    exit 0
+  end
+
   def write_pid
     File.open(@pidfile, "w") do |f|
 #      f.write($$)
