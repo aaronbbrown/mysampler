@@ -25,7 +25,7 @@ $options[:daemonize] = false
 $options[:pidfile] = Dir.pwd + "/mysample.pid"
 $options[:interval] = 10 #seconds
 $options[:command] = ProcessCtl::STARTCMD
-$options[:format] = "YAML"
+$options[:output] = MySQLSampler::CSVOUT
 
 
 opts = OptionParser.new
@@ -35,6 +35,17 @@ opts.on("-p", "--pass PASSWORD", String, "MySQL Password" )  { |v|  $options[:db
 opts.on("-P", "--port PORT", Integer, "MySQL port (default #{$options[:dbport]})" )  { |v|  $options[:dbport] = v }
 opts.on("--pidfile PIDFILE", String, "PID File (default: #{$options[:pidfile]})" )  { |v|  $options[:pidfile] = v }
 opts.on("-H", "--host HOST", String, "MySQL hostname (default: #{$options[:dbhost]})" )  { |v|  $options[:dbhost] = v }
+opts.on("-o", "--output (csv|yaml)", String, "Output format (default: csv)" ) do |v| 
+  $options[:output] = case v
+    when "yaml"
+      MySQLSampler::YAMLOUT
+    when "csv"
+      MySQLSampler::CSVOUT
+    else
+      puts opts
+      exit 1
+  end
+end
 opts.on("-i", "--interval SECONDS", Integer, "Interval between runs (default: #{$options[:interval]})" )  { |v|  $options[:interval] = v }
 opts.on("-d", "--daemonize", "daemonize process (default: #{$options[:daemonize]})" )  { |v|  $options[:daemonize] = true }
 opts.on("-k", "--command (start|stop|status)", String, "command to pass daemon") do |v|
@@ -59,13 +70,13 @@ pc.pidfile   = $options[:pidfile]
 
 
 ms = MySQLSampler.new
-ms.user = $options[:dbuser]
-ms.pass = $options[:dbpass]
-ms.host = $options[:dbhost]
-ms.port = $options[:dbport]
-ms.socket = $options[:dbsocket]
+ms.user     = $options[:dbuser]
+ms.pass     = $options[:dbpass]
+ms.host     = $options[:dbhost]
+ms.port     = $options[:dbport]
+ms.socket   = $options[:dbsocket]
 ms.interval = $options[:interval]
-
+ms.output   = $options[:output]
 
 case $options[:command]
   when ProcessCtl::STOPCMD

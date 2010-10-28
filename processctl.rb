@@ -7,6 +7,7 @@ class ProcessCtl
   def initialize
     @pidfile = ""
     @daemonize = false
+    @pid = nil
   end
 
 
@@ -69,6 +70,7 @@ protected
   end
 
   def write_pid
+    @pid = Process.pid
     File.open(@pidfile, "w") do |f|
 #      f.write($$)
       f.write(Process.pid)
@@ -76,8 +78,8 @@ protected
   end
 
   def get_running_pids
+    return [@pid] if @pid
     result = []
-    return @pid if @pid
     if File.file? @pidfile
       pid = File.read @pidfile
       # big long line I stole to kill a pid
