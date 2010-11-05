@@ -1,8 +1,9 @@
 #!/usr/bin/ruby
 
 require 'optparse'
-require 'processctl.rb'
-require 'mysqlsampler.rb'
+require File.dirname(__FILE__) + '/processctl.rb'
+require File.dirname(__FILE__) + '/mysqlsampler.rb'
+require File.dirname(__FILE__) + '/file.rb'
 require 'rubygems'
 require 'dbi'
 
@@ -26,6 +27,7 @@ $options[:pidfile] = Dir.pwd + "/mysample.pid"
 $options[:interval] = 10 #seconds
 $options[:command] = ProcessCtl::STARTCMD
 $options[:output] = MySQLSampler::CSVOUT
+$options[:relative] = true
 
 
 opts = OptionParser.new
@@ -35,6 +37,7 @@ opts.on("-p", "--pass PASSWORD", String, "MySQL Password" )  { |v|  $options[:db
 opts.on("-P", "--port PORT", Integer, "MySQL port (default #{$options[:dbport]})" )  { |v|  $options[:dbport] = v }
 opts.on("--pidfile PIDFILE", String, "PID File (default: #{$options[:pidfile]})" )  { |v|  $options[:pidfile] = v }
 opts.on("-H", "--host HOST", String, "MySQL hostname (default: #{$options[:dbhost]})" )  { |v|  $options[:dbhost] = v }
+opts.on("-f", "--file FILENAME", String, "output filename (will be appended with rotation timestamp)" )  { |v|  $options[:outputfn] = v }
 opts.on("-o", "--output (csv|yaml)", String, "Output format (default: csv)" ) do |v| 
   $options[:output] = case v
     when "yaml"
@@ -46,7 +49,8 @@ opts.on("-o", "--output (csv|yaml)", String, "Output format (default: csv)" ) do
       exit 1
   end
 end
-opts.on("-i", "--interval SECONDS", Integer, "Interval between runs (default: #{$options[:interval]})" )  { |v|  $options[:interval] = v }
+opts.on("-i", "--sleep SECONDS", Integer, "Interval between runs (default: #{$options[:interval]})" )  { |v|  $options[:interval] = v }
+opts.on("-r", "--relative","Show the difference between the current and previous values (default: #{$options[:relative]})" )  { |v|  $options[:relative] = v }
 opts.on("-d", "--daemonize", "daemonize process (default: #{$options[:daemonize]})" )  { |v|  $options[:daemonize] = true }
 opts.on("-k", "--command (start|stop|status)", String, "command to pass daemon") do |v|
   $options[:command] = case v
@@ -77,6 +81,9 @@ ms.port     = $options[:dbport]
 ms.socket   = $options[:dbsocket]
 ms.interval = $options[:interval]
 ms.output   = $options[:output]
+ms.relative = $options[:relative]
+ms.outputfn = $options[:outputfn] if $options[:outputfn]
+ms.rotateinterval = FileRotating::HOUR
 
 case $options[:command]
   when ProcessCtl::STOPCMD
