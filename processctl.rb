@@ -83,7 +83,7 @@ protected
     if File.file? @pidfile
       pid = File.read @pidfile
       # big long line I stole to kill a pid
-      result =  `ps -p #{pid} -o pid h`.to_a.map!{|s| s.to_i}
+      result =  `ps -p #{pid} -o pid | sed 1d`.to_a.map!{|x| x.to_i}
     end
     return result
   end

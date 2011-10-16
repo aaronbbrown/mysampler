@@ -1,4 +1,4 @@
-#!/usr/bin/ruby
+#!/usr/bin/env ruby
 
 require 'optparse'
 require File.dirname(__FILE__) + '/processctl.rb'
@@ -28,22 +28,26 @@ $options[:interval] = 10 #seconds
 $options[:command] = ProcessCtl::STARTCMD
 $options[:output] = MySQLSampler::CSVOUT
 $options[:relative] = true
+$options[:graphitehost] = nil
 
 
 opts = OptionParser.new
-opts.banner = "Usage $0 [OPTIONS]"
+opts.banner = "Usage #{$0} [OPTIONS]"
 opts.on("-u", "--user USER", String, "MySQL User" )  { |v|  $options[:dbuser] = v }
 opts.on("-p", "--pass PASSWORD", String, "MySQL Password" )  { |v|  $options[:dbpass] = v }
 opts.on("-P", "--port PORT", Integer, "MySQL port (default #{$options[:dbport]})" )  { |v|  $options[:dbport] = v }
 opts.on("--pidfile PIDFILE", String, "PID File (default: #{$options[:pidfile]})" )  { |v|  $options[:pidfile] = v }
 opts.on("-H", "--host HOST", String, "MySQL hostname (default: #{$options[:dbhost]})" )  { |v|  $options[:dbhost] = v }
 opts.on("-f", "--file FILENAME", String, "output filename (will be appended with rotation timestamp)" )  { |v|  $options[:outputfn] = v }
-opts.on("-o", "--output (csv|yaml)", String, "Output format (default: csv)" ) do |v| 
+opts.on("-o", "--output (csv|yaml|graphite)", String, "Output format (default: csv)" ) do |v| 
   $options[:output] = case v
     when "yaml"
       MySQLSampler::YAMLOUT
     when "csv"
       MySQLSampler::CSVOUT
+    when "graphite"
+      require 'graphite/logger'
+      MySQLSampler::GRAPHITEOUT
     else
       puts opts
       exit 1
@@ -65,6 +69,7 @@ opts.on("-k", "--command (start|stop|status)", String, "command to pass daemon")
       exit 1
   end
 end
+opts.on("-g", "--graphite HOST:PORT", String, "Graphite server:port") { |v| $options[:graphitehost] = v }
 opts.on("-h", "--help",  "this message") { puts opts; exit 1}
 opts.parse!
 
@@ -84,6 +89,7 @@ ms.output   = $options[:output]
 ms.relative = $options[:relative]
 ms.outputfn = $options[:outputfn] if $options[:outputfn]
 ms.rotateinterval = FileRotating::HOUR
+ms.graphitehost = $options[:graphitehost] if ms.output == MySQLSampler::GRAPHITEOUT
 
 case $options[:command]
   when ProcessCtl::STOPCMD

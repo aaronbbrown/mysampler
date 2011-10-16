@@ -2,7 +2,7 @@ require 'csv'
 require File.dirname(__FILE__) + '/file.rb'
 
 class MySQLSampler
-  CSVOUT, YAMLOUT = 0,1
+  CSVOUT, YAMLOUT,GRAPHITEOUT = 0,1,2
   attr_accessor :user, :pass, :port, :socket, :host, :interval, :output, :relative, :outputfn, :rotateinterval
 
   def initialize
@@ -18,22 +18,28 @@ class MySQLSampler
     @prev_rows = {}
     @outputfn = nil
     @rotateinterval = FileRotating::HOUR
+    @rf = nil
+    @graphite = nil
+
+    conn_to_graphite if @output == GRAPHITEOUT
   end
 
   def run
     DBI.connect(dsn, @user, @pass) do |dbh|
-      sth = dbh.execute(@query) 
-      rows = rows_to_xhash(sth)
-      params = { :interval => @rotateinterval }
-      params[:header] =  hash_to_csv(rows,true) if sth 
-
-      f = @outputfn ? FileRotating.new(params, @outputfn, "w") : STDOUT
-      puts(header) unless f && @outputfn
+      get_mysql_hostname dbh
+      if @output == GRAPHITEOUT 
+        rows = get_header_rows(dbh)
+        open_rotating_file(:header => hash_to_csv(rows,true), :interval => @rotateinterval) 
+        output_header(rows) 
+      end
 
       loop do
         begin
           sth = dbh.execute(@query) 
-          f.puts output_query(sth) if sth
+          if sth
+            rows = build_hash(sth) 
+            output_query(rows) 
+          end
         rescue DBI::DatabaseError => e
 # this should go to STDERR 
           puts "An error occurred"
@@ -46,11 +52,33 @@ class MySQLSampler
   
         sleep @interval
       end
-      f.close if f && @outputfn
+      @rf.close if @rf && @outputfn
     end
   end
 
 protected
+  # get the real hostname of the MySQL Server that we are connected to
+  def get_mysql_hostname (dbh)
+    @mysql_hostname = dbh.select_one("SELECT @@hostname;")[0]
+  end
+
+  def get_header_rows(dbh)
+    sth = dbh.execute(@query) 
+    rows_to_xhash(sth)
+  end
+
+  def output_header(rows)
+    @rf.puts(header) if @rf && @outputfn
+  end
+
+  def conn_to_graphite
+    @graphite = Graphite::Logger.new(@graphitehost)
+  end
+
+  def open_rotating_file (params)
+    @rf = @outputfn ? FileRotating.new(params, @outputfn, "w") : STDOUT
+  end
+
   def calc_relative(rows)
     result = {}
     rows.each do |k,v|
@@ -63,19 +91,27 @@ protected
     return result
   end
 
-  def output_query ( sth )
-    result = ""
-
+  def build_hash (sth)
     raw_rows = rows_to_xhash(sth) 
     rows = @relative ? calc_relative(raw_rows) : raw_rows
     @prev_rows = raw_rows
+    rows
+  end
+
+  def output_query (rows )
     case @output
-      when YAMLOUT then
-#        result = YAML::dump({time => Time.now, rows})
-      else # CSVOUT 
-        result = hash_to_csv(rows)
+    when YAMLOUT then
+#      result = YAML::dump({time => Time.now, rows})
+    when GRAPHITEOUT then
+      @graphite.log(Time.now.to_i, rows) if @graphite
+    else # CSVOUT 
+      @rf.puts(hash_to_csv(rows)) if @rf && @outputfn
     end
-    return result
+    true
+  end
+
+  def is_a_string? (value)
+    value.is_a?(String) && (value == value.to_i.to_s)
   end
 
   # the query comes back in 2 columns.  Convert the rows to crosstab xhash entries
@@ -83,8 +119,15 @@ protected
   def rows_to_xhash( sth )
     result = {}
     while row = sth.fetch_array do
-      # does it look like a number?
-     result[row[0]] = (row[1].is_a?(String) && (row[1] == row[1].to_i.to_s)) ? row[1].to_i : row[1]
+      k = @ouput == GRAPHITEOUT ? "mysql.globalstatus.#{@mysql_hostname}.#{row[0]}" : row[0]
+
+      if @output == GRAPHITEOUT
+        #skip anything that isn't a number
+        next if is_a_string?(row[1])
+      end
+   
+      # convert number-like strings to integers
+      result[k] = is_a_string?(row[1]) ? row[1].to_i : row[1]
     end
     return result
   end
@@ -92,18 +135,8 @@ protected
   def hash_to_csv ( rows, header = false )
     csv_str = ""
     str = header ?  "Time" : "#{Time.now.strftime('%Y-%m-%d %H:%M:%S')}" 
-    rows.sort.each do |v|
-      str += header ? ",#{v[0]}" : ",#{v[1]}"
-    end
+    rows.sort.each { str += header ? ",#{v[0]}" : ",#{v[1]}" } 
     return str
-#    row = []
-#    csv_str = CSV.generate_line do |csv|
-#      rows.each do |k,v|
-#        row << v
-#      end
-#      csv << row
-#    end
-#    return str + "," + csv_str
   end
 
   def dsn
