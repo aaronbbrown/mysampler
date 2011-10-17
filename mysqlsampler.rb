@@ -1,4 +1,7 @@
 require 'csv'
+require 'rubygems'
+require 'sequel'
+
 require File.dirname(__FILE__) + '/file.rb'
 
 class MySQLSampler
@@ -25,41 +28,40 @@ class MySQLSampler
   end
 
   def run
-    DBI.connect(dsn, @user, @pass) do |dbh|
-      get_mysql_hostname dbh
-      if @output == GRAPHITEOUT 
-        rows = get_header_rows(dbh)
-        open_rotating_file(:header => hash_to_csv(rows,true), :interval => @rotateinterval) 
-        output_header(rows) 
+    @sequel = db_connect
+    get_mysql_hostname 
+    if @output == GRAPHITEOUT 
+      rows = get_header_rows(dbh)
+      open_rotating_file(:header => hash_to_csv(rows,true), :interval => @rotateinterval) 
+      output_header(rows) 
+    end
+
+    loop do
+      begin
+        sth = dbh.execute(@query) 
+        if sth
+          rows = build_hash(sth) 
+          output_query(rows) 
+        end
+      rescue DBI::DatabaseError => e
+# this should go to STDERR 
+        puts "An error occurred"
+        puts "Error code: #{e.err}"
+        puts "Error message: #{e.errstr}"
+        puts "Error SQLSTATE: #{e.state}"
+      ensure
+        sth.finish if sth
       end
 
-      loop do
-        begin
-          sth = dbh.execute(@query) 
-          if sth
-            rows = build_hash(sth) 
-            output_query(rows) 
-          end
-        rescue DBI::DatabaseError => e
-# this should go to STDERR 
-          puts "An error occurred"
-          puts "Error code: #{e.err}"
-          puts "Error message: #{e.errstr}"
-          puts "Error SQLSTATE: #{e.state}"
-        ensure
-          sth.finish if sth
-        end
-  
-        sleep @interval
-      end
-      @rf.close if @rf && @outputfn
+      sleep @interval
     end
+    @rf.close if @rf && @outputfn
   end
 
 protected
   # get the real hostname of the MySQL Server that we are connected to
-  def get_mysql_hostname (dbh)
-    @mysql_hostname = dbh.select_one("SELECT @@hostname;")[0]
+  def get_mysql_hostname 
+    @sequel.run("SELECT @@hostname;")
   end
 
   def get_header_rows(dbh)
@@ -137,6 +139,15 @@ protected
     str = header ?  "Time" : "#{Time.now.strftime('%Y-%m-%d %H:%M:%S')}" 
     rows.sort.each { str += header ? ",#{v[0]}" : ",#{v[1]}" } 
     return str
+  end
+
+  def db_connect
+    params = { :host => @host, 
+               :user => @user, 
+               :port => @port,
+               :password => @pass }
+    params[:socket] = @socket if @socket    
+    @sequel = Sequel.mysql(params)
   end
 
   def dsn
