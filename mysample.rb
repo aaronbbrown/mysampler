@@ -5,7 +5,8 @@ require File.dirname(__FILE__) + '/processctl.rb'
 require File.dirname(__FILE__) + '/mysqlsampler.rb'
 require File.dirname(__FILE__) + '/file.rb'
 require 'rubygems'
-require 'dbi'
+require 'sequel'
+require 'logger'
 
 # This fixes a bug in the library where an unknown type will cause
 # exceptions to be raised, rather than using a reasonable default: String

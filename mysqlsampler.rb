@@ -6,7 +6,7 @@ require File.dirname(__FILE__) + '/file.rb'
 
 class MySQLSampler
   CSVOUT, YAMLOUT,GRAPHITEOUT = 0,1,2
-  attr_accessor :user, :pass, :port, :socket, :host, :interval, :output, :relative, :outputfn, :rotateinterval
+  attr_accessor :user, :pass, :port, :socket, :host, :interval, :output, :relative, :outputfn, :rotateinterval, :graphitehost
 
   def initialize
     @user = nil
@@ -22,35 +22,29 @@ class MySQLSampler
     @outputfn = nil
     @rotateinterval = FileRotating::HOUR
     @rf = nil
+    @graphitehost = nil
     @graphite = nil
-
-    conn_to_graphite if @output == GRAPHITEOUT
+    @mysql_hostname = nil
   end
 
   def run
     @sequel = db_connect
-    get_mysql_hostname 
     if @output == GRAPHITEOUT 
-      rows = get_header_rows(dbh)
-      open_rotating_file(:header => hash_to_csv(rows,true), :interval => @rotateinterval) 
-      output_header(rows) 
+      get_mysql_hostname 
+      conn_to_graphite if @output == GRAPHITEOUT
+    else
+      headers = get_header_rows
+      open_rotating_file(:header => headers.join(","), :interval => @rotateinterval) 
     end
 
     loop do
       begin
-        sth = dbh.execute(@query) 
-        if sth
-          rows = build_hash(sth) 
-          output_query(rows) 
-        end
-      rescue DBI::DatabaseError => e
-# this should go to STDERR 
-        puts "An error occurred"
-        puts "Error code: #{e.err}"
-        puts "Error message: #{e.errstr}"
-        puts "Error SQLSTATE: #{e.state}"
-      ensure
-        sth.finish if sth
+        rows = @sequel[@query].to_hash(:Variable_name,:Value)
+        rows = values_to_numeric(rows)
+        rows = calc_relative(rows)
+        output_query(rows) 
+      rescue Exception => e
+        STDERR.puts "An error occurred #{e}"
       end
 
       sleep @interval
@@ -61,12 +55,11 @@ class MySQLSampler
 protected
   # get the real hostname of the MySQL Server that we are connected to
   def get_mysql_hostname 
-    @sequel.run("SELECT @@hostname;")
+    @mysql_hostname = @sequel["SELECT @@hostname;"].first[:@@hostname]
   end
 
-  def get_header_rows(dbh)
-    sth = dbh.execute(@query) 
-    rows_to_xhash(sth)
+  def get_header_rows
+    @sequel[@query].to_hash(:Variable_name,:Value).keys
   end
 
   def output_header(rows)
@@ -75,6 +68,7 @@ protected
 
   def conn_to_graphite
     @graphite = Graphite::Logger.new(@graphitehost)
+    @graphite.logger = Logger.new('graphite.out')
   end
 
   def open_rotating_file (params)
@@ -84,20 +78,30 @@ protected
   def calc_relative(rows)
     result = {}
     rows.each do |k,v|
-      if @prev_rows[k] && v.is_a?(Numeric)
+      if @prev_rows[k] && numeric?(v)
         result[k] = v - @prev_rows[k]
       else 
         result[k] = v
       end
     end
+    @prev_rows = rows
     return result
   end
 
-  def build_hash (sth)
-    raw_rows = rows_to_xhash(sth) 
-    rows = @relative ? calc_relative(raw_rows) : raw_rows
-    @prev_rows = raw_rows
-    rows
+  def prefix_keys ( h, prefix )
+    Hash[h.map { |k,v| [ "#{prefix}#{k}", v] }]
+  end
+
+  def numeric? (value)
+    true if Float(value) rescue false
+  end
+
+  def to_numeric (value)
+    numeric?(value) ? value.to_i : value
+  end
+  
+  def values_to_numeric ( h )
+    Hash[h.map { |k,v| [ k, to_numeric(v)] }]
   end
 
   def output_query (rows )
@@ -105,7 +109,8 @@ protected
     when YAMLOUT then
 #      result = YAML::dump({time => Time.now, rows})
     when GRAPHITEOUT then
-      @graphite.log(Time.now.to_i, rows) if @graphite
+      graphite_rows = prefix_keys(rows, "mysql.#{@mysql_hostname.split('.').reverse.join('.')}.")
+      @graphite.log(Time.now.to_i, graphite_rows) if @graphite
     else # CSVOUT 
       @rf.puts(hash_to_csv(rows)) if @rf && @outputfn
     end
@@ -116,28 +121,9 @@ protected
     value.is_a?(String) && (value == value.to_i.to_s)
   end
 
-  # the query comes back in 2 columns.  Convert the rows to crosstab xhash entries
-  # takes an open statement handle
-  def rows_to_xhash( sth )
-    result = {}
-    while row = sth.fetch_array do
-      k = @ouput == GRAPHITEOUT ? "mysql.globalstatus.#{@mysql_hostname}.#{row[0]}" : row[0]
-
-      if @output == GRAPHITEOUT
-        #skip anything that isn't a number
-        next if is_a_string?(row[1])
-      end
-   
-      # convert number-like strings to integers
-      result[k] = is_a_string?(row[1]) ? row[1].to_i : row[1]
-    end
-    return result
-  end
-
   def hash_to_csv ( rows, header = false )
-    csv_str = ""
     str = header ?  "Time" : "#{Time.now.strftime('%Y-%m-%d %H:%M:%S')}" 
-    rows.sort.each { str += header ? ",#{v[0]}" : ",#{v[1]}" } 
+    rows.sort.each { |v| str += header ? ",#{v[0]}" : ",#{v[1]}" } 
     return str
   end
 
@@ -150,11 +136,6 @@ protected
     @sequel = Sequel.mysql(params)
   end
 
-  def dsn
-    result = "DBI:Mysql:host=#{@host};port=#{@port}"
-    result += ";socket=#{@socket}" if @socket
-    return result
-  end
 end
 
 
