@@ -40,7 +40,7 @@ class MySQLSampler
       begin
         rows = @sequel[@query].to_hash(:Variable_name,:Value)
         rows = values_to_numeric(rows)
-        rows = calc_relative(rows)
+        rows = calc_relative(rows) if @relative
         output_query(rows) 
       rescue Exception => e
         STDERR.puts "An error occurred #{e}"
