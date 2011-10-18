@@ -52,7 +52,6 @@ class MySQLSampler
     @rf.close if @rf && @outputfn
   end
 
-protected
   # get the real hostname of the MySQL Server that we are connected to
   def get_mysql_hostname 
     @mysql_hostname = @sequel["SELECT @@hostname;"].first[:@@hostname]
