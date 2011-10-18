@@ -68,7 +68,7 @@ protected
 
   def conn_to_graphite
     @graphite = Graphite::Logger.new(@graphitehost)
-    @graphite.logger = Logger.new('graphite.out')
+#    @graphite.logger = Logger.new('graphite.out')
   end
 
   def open_rotating_file (params)
@@ -135,7 +135,6 @@ protected
     params[:socket] = @socket if @socket    
     @sequel = Sequel.mysql(params)
   end
-
 end
 
 
