@@ -1,4 +1,3 @@
-require 'csv'
 require 'rubygems'
 require 'sequel'
 
@@ -9,21 +8,21 @@ class MySQLSampler
   attr_accessor :user, :pass, :port, :socket, :host, :interval, :output, :relative, :outputfn, :rotateinterval, :graphitehost
 
   def initialize
-    @user = nil
-    @pass = nil
-    @port = 3306
-    @socket = nil
-    @host = "localhost"
-    @query = "SHOW GLOBAL STATUS"
-    @interval = 10
-    @relative = false
-    @output = CSVOUT
-    @prev_rows = {}
-    @outputfn = nil
+    @user           = nil
+    @pass           = nil
+    @port           = 3306
+    @socket         = nil
+    @host           = "localhost"
+    @query          = "SHOW GLOBAL STATUS"
+    @interval       = 10
+    @relative       = false
+    @output         = CSVOUT
+    @prev_rows      = {}
+    @outputfn       = nil
     @rotateinterval = FileRotating::HOUR
-    @rf = nil
-    @graphitehost = nil
-    @graphite = nil
+    @rf             = nil
+    @graphitehost   = nil
+    @graphite       = nil
     @mysql_hostname = nil
   end
 

@@ -8,39 +8,28 @@ require 'rubygems'
 require 'sequel'
 require 'logger'
 
-# This fixes a bug in the library where an unknown type will cause
-# exceptions to be raised, rather than using a reasonable default: String
-# coercion.
-# http://rubyforge.org/tracker/index.php?func=detail&aid=16741&group_id=4550&atid=17564
-#require 'DBD/Mysql/Mysql'
-#class DBI::DBD::Mysql::Database
-#  TYPE_MAP.default = TYPE_MAP[nil] if TYPE_MAP.default.nil?
-#end
-
-$options = {}
-$options[:dbuser] = nil
-$options[:dbpass] = nil
-$options[:dbhost] = "localhost"
-$options[:dbport] = 3306
-$options[:dbsocket] = nil
-$options[:daemonize] = false
-$options[:pidfile] = Dir.pwd + "/mysample.pid"
-$options[:interval] = 10 #seconds
-$options[:command] = ProcessCtl::STARTCMD
-$options[:output] = MySQLSampler::CSVOUT
-$options[:relative] = true
-$options[:graphitehost] = nil
-
+$options = { :dbuser    => nil,
+             :dbpass    => nil,
+             :dbhost    => "localhost",
+             :dbport    => 3306,
+             :dbsocket  => nil,
+             :daemonize => false,
+             :pidfile   => Dir.pwd + "/mysample.pid",
+             :interval  => 10, #seconds
+             :command   => ProcessCtl::STARTCMD ,
+             :output    => MySQLSampler::CSVOUT,
+             :relative  => true,
+             :graphitehost => nil, }
 
 opts = OptionParser.new
 opts.banner = "Usage #{$0} [OPTIONS]"
-opts.on("-u", "--user USER", String, "MySQL User" )  { |v|  $options[:dbuser] = v }
-opts.on("-p", "--pass PASSWORD", String, "MySQL Password" )  { |v|  $options[:dbpass] = v }
-opts.on("-P", "--port PORT", Integer, "MySQL port (default #{$options[:dbport]})" )  { |v|  $options[:dbport] = v }
-opts.on("--pidfile PIDFILE", String, "PID File (default: #{$options[:pidfile]})" )  { |v|  $options[:pidfile] = v }
-opts.on("-H", "--host HOST", String, "MySQL hostname (default: #{$options[:dbhost]})" )  { |v|  $options[:dbhost] = v }
-opts.on("-f", "--file FILENAME", String, "output filename (will be appended with rotation timestamp)" )  { |v|  $options[:outputfn] = v }
-opts.on("-o", "--output (csv|yaml|graphite)", String, "Output format (default: csv)" ) do |v| 
+opts.on("-u", "--user USER",     String,  "MySQL User" )  { |v|  $options[:dbuser] = v }
+opts.on("-p", "--pass PASSWORD", String,  "MySQL Password" )  { |v|  $options[:dbpass] = v }
+opts.on("-P", "--port PORT",     Integer, "MySQL port (default #{$options[:dbport]})" )  { |v|  $options[:dbport] = v }
+opts.on("--pidfile PIDFILE",     String,  "PID File (default: #{$options[:pidfile]})" )  { |v|  $options[:pidfile] = v }
+opts.on("-H", "--host HOST",     String,  "MySQL hostname (default: #{$options[:dbhost]})" )  { |v|  $options[:dbhost] = v }
+opts.on("-f", "--file FILENAME", String,  "output filename (will be appended with rotation timestamp)" )  { |v|  $options[:outputfn] = v }
+opts.on("-o", "--output (csv|graphite)", String, "Output format (default: csv)" ) do |v| 
   $options[:output] = case v
     when "yaml"
       MySQLSampler::YAMLOUT
@@ -93,10 +82,10 @@ ms.rotateinterval = FileRotating::HOUR
 ms.graphitehost = $options[:graphitehost] if ms.output == MySQLSampler::GRAPHITEOUT
 
 case $options[:command]
-  when ProcessCtl::STOPCMD
-    pc.stop { puts "I'm done" }
-  when ProcessCtl::STATUSCMD
-    exit pc.status
-  else
-    exit pc.start { ms.run }
+when ProcessCtl::STOPCMD
+  pc.stop { puts "I'm done" }
+when ProcessCtl::STATUSCMD
+  exit pc.status
+else
+  exit pc.start { ms.run }
 end
