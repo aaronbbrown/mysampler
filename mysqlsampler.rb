@@ -116,10 +116,6 @@ class MySQLSampler
     true
   end
 
-  def is_a_string? (value)
-    value.is_a?(String) && (value == value.to_i.to_s)
-  end
-
   def hash_to_csv ( rows, header = false )
     str = header ?  "Time" : "#{Time.now.strftime('%Y-%m-%d %H:%M:%S')}" 
     rows.sort.each { |v| str += header ? ",#{v[0]}" : ",#{v[1]}" } 
