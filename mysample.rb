@@ -18,7 +18,7 @@ $options = { :dbuser    => nil,
              :interval  => 10, #seconds
              :command   => ProcessCtl::STARTCMD ,
              :output    => MySQLSampler::CSVOUT,
-             :relative  => true,
+             :relative  => false,
              :graphitehost => nil, }
 
 opts = OptionParser.new
