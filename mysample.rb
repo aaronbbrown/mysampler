@@ -67,13 +67,15 @@ pc = ProcessCtl.new
 pc.daemonize = $options[:daemonize]
 pc.pidfile   = $options[:pidfile]
 
+db = MySQLSampler::Connection.new( :user => $options[:dbuser],
+                                   :pass => $options[:dbpass],
+                                   :host => $options[:dbhost],
+                                   :port => $options[:dbport],
+                                   :socket => $options[:dbsocket] )
 
-ms = MySQLSampler.new
-ms.user     = $options[:dbuser]
-ms.pass     = $options[:dbpass]
-ms.host     = $options[:dbhost]
-ms.port     = $options[:dbport]
-ms.socket   = $options[:dbsocket]
+
+ms = MySQLSampler::MySQLSampler.new
+ms.connection = db
 ms.interval = $options[:interval]
 ms.output   = $options[:output]
 ms.relative = $options[:relative]
