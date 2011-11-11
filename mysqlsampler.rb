@@ -16,10 +16,10 @@ module MySQLSampler
       @port   = h[:port] || 3306
       @host   = h[:host] || "localhost"
 
-      params = { :host => @host, 
-                :user => @user, 
-                :port => @port,
-                :password => @pass }
+      params = { :host     => @host, 
+                 :user     => @user, 
+                 :port     => @port,
+                 :password => @pass }
       params[:socket] = @socket if @socket    
       @sequel = Sequel.mysql(params)
     end
@@ -27,6 +27,20 @@ module MySQLSampler
     # get the real hostname of the MySQL Server that we are connected to
     def get_mysql_hostname 
       @sequel["SELECT @@hostname;"].first[:@@hostname]
+    end
+
+    def mysql_version_exact
+      @sequel["SELECT @@version;"].first[:@@version]
+    end
+
+    def mysql_version
+      ver = mysql_version_exact.split(".")
+      ver.values_at(0,1).join(".")
+    end
+
+    def engine_supported( engine )
+      h = @sequel["SHOW ENGINES"].to_hash(:Engine,:Support)
+      h[engine] =~ /(YES|DEFAULT)/
     end
   end
 
@@ -47,6 +61,7 @@ module MySQLSampler
     end
 
     def execute
+      return {} unless @query
       h = prefix_keys(@connection.sequel[@query].to_hash(@keycolumn,@valuecolumn))
       apply_value_regex(h)
     end
@@ -60,13 +75,40 @@ module MySQLSampler
       prefix_keys(@connection.sequel[@query].to_hash(@keycolumn,@valuecolumn)).keys
     end
 
-
     def normalize ( str )
       str.gsub(/[^[:alnum:]\._]/, '_')
     end
 
     def prefix_keys ( h )
       Hash[h.map { |k,v| [ normalize("#{@key_prefix}#{k}"), v] }]
+    end
+  end
+
+  class MutexHash < QueryHash
+    def initialize ( h = {} )
+      h.merge!( :keycolumn   => :Name,
+                :valuecolumn => :Status,
+                :key_prefix  => "mutex.",
+                :value_regex => /os_waits=(\d+)/ )
+      h[:query] = which_query h[:connection]
+
+      super h
+    end
+
+    def which_query ( connection )
+      version = connection.mysql_version
+      if version == "5.0"
+        "SHOW MUTEX STATUS"
+      elsif version.to_f > 5.0
+        "SHOW ENGINE INNODB MUTEX"
+      else
+        # not supported
+        nil
+      end
+    end
+
+    def execute
+      super if @connection.engine_supported("InnoDB")
     end
   end
 
@@ -88,17 +130,12 @@ module MySQLSampler
 
     def run
       @sequel = @connection.sequel
-      status  = QueryHash.new( :query => "SHOW GLOBAL STATUS",       
-                               :connection => @connection, 
-                               :keycolumn => :Variable_name, 
+      status  = QueryHash.new( :query       => "SHOW GLOBAL STATUS",       
+                               :connection  => @connection, 
+                               :keycolumn   => :Variable_name, 
                                :valuecolumn => :Value, 
-                               :key_prefix => "status.")
-      mutexes = QueryHash.new( :query => "SHOW ENGINE INNODB MUTEX", 
-                               :connection => @connection, 
-                               :keycolumn => :Name,          
-                               :valuecolumn => :Status, 
-                               :key_prefix => "mutex.",
-                               :value_regex => /os_waits=(\d+)/)
+                               :key_prefix  => "status.")
+      mutexes = MutexHash.new( :connection  => @connection )
 
       if @output == GRAPHITEOUT 
         @mysql_hostname = @connection.get_mysql_hostname 
@@ -188,6 +225,4 @@ module MySQLSampler
     end
 
   end
-
-
 end
