@@ -1,6 +1,5 @@
 require 'rubygems'
 require 'sequel'
-
 require File.dirname(__FILE__) + '/file.rb'
 
 module MySQLSampler
@@ -136,6 +135,7 @@ module MySQLSampler
                                :valuecolumn => :Value, 
                                :key_prefix  => "status.")
       mutexes = MutexHash.new( :connection  => @connection )
+      innodbstatus = InnoDBStatus.new( :connection  => @connection )
 
       if @output == GRAPHITEOUT 
         @mysql_hostname = @connection.get_mysql_hostname 
@@ -151,6 +151,7 @@ module MySQLSampler
         begin
           rows = status.execute
           rows.merge!(mutexes.execute)
+          innodbstatus.execute 
           rows = values_to_numeric(rows)
           rows = calc_relative(rows) if @relative
           output_query(rows) 

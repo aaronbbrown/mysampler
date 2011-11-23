@@ -1,0 +1,888 @@
+*************************** 1. row ***************************
+  Type: InnoDB
+  Name: 
+Status: 
+=====================================
+111111 19:27:42 INNODB MONITOR OUTPUT
+=====================================
+Per second averages calculated from the last 37 seconds
+-----------------
+BACKGROUND THREAD
+-----------------
+srv_master_thread loops: 26645693 1_second, 26645613 sleeps, 266456 10_second, 455 background, 455 flush
+srv_master_thread log flush and writes: 2937913
+----------
+SEMAPHORES
+----------
+OS WAIT ARRAY INFO: reservation count 15790436, signal count 18650446
+Mutex spin waits 6231859458, rounds 9218278203, OS waits 7750045
+RW-shared spins 7207433, OS waits 656673; RW-excl spins 97132, OS waits 408931
+Spin rounds per wait: 1.48 mutex, 10.35 RW-shared, 177.41 RW-excl
+--------
+FILE I/O
+--------
+I/O thread 0 state: waiting for i/o request (insert buffer thread)
+I/O thread 1 state: waiting for i/o request (log thread)
+I/O thread 2 state: waiting for i/o request (read thread)
+I/O thread 3 state: waiting for i/o request (read thread)
+I/O thread 4 state: waiting for i/o request (read thread)
+I/O thread 5 state: waiting for i/o request (read thread)
+I/O thread 6 state: waiting for i/o request (write thread)
+I/O thread 7 state: waiting for i/o request (write thread)
+I/O thread 8 state: waiting for i/o request (write thread)
+I/O thread 9 state: waiting for i/o request (write thread)
+Pending normal aio reads: 0, aio writes: 0,
+ ibuf aio reads: 0, log i/o's: 0, sync i/o's: 0
+Pending flushes (fsync) log: 0; buffer pool: 0
+8702304 OS file reads, 249839013 OS file writes, 147614062 OS fsyncs
+0.59 reads/s, 16384 avg bytes/read, 62.21 writes/s, 31.38 fsyncs/s
+-------------------------------------
+INSERT BUFFER AND ADAPTIVE HASH INDEX
+-------------------------------------
+Ibuf: size 1, free list len 1922, seg size 1924,
+725992 inserts, 725992 merged recs, 546813 merges
+Hash table size 283212071, node heap has 1 buffer(s)
+0.00 hash searches/s, 30503.28 non-hash searches/s
+---
+LOG
+---
+Log sequence number 2723462238497
+Log flushed up to   2723462238497
+Last checkpoint at  2723462084076
+Max checkpoint age    3396675134
+Checkpoint age target 3290529037
+Modified age          154421
+Checkpoint age        154421
+0 pending log writes, 0 pending chkp writes
+131000087 log i/o's done, 25.67 log i/o's/second
+----------------------
+BUFFER POOL AND MEMORY
+----------------------
+Total memory allocated 140995723264; in additional pool allocated 0
+Internal hash tables (constant factor + variable factor)
+    Adaptive hash index 2265717168 	(2265696568 + 20600)
+    Page hash           141606856
+    Dictionary cache    569091839 	(566425616 + 2666223)
+    File system         195856 	(82672 + 113184)
+    Lock system         340161088 	(339997048 + 164040)
+    Recovery system     0 	(0 + 0)
+    Threads             449944 	(406936 + 43008)
+Dictionary memory allocated 2666223
+Buffer pool size        8388607
+Buffer pool size, bytes 137438937088
+Free buffers            1
+Database pages          8388605
+Old database pages      3096554
+Modified db pages       594
+Pending reads 0
+Pending writes: LRU 0, flush list 0, single page 0
+Pages made young 4784976, not young 0
+0.30 youngs/s, 0.00 non-youngs/s
+Pages read 12326482, created 1997429, written 137433410
+0.59 reads/s, 0.14 creates/s, 41.24 writes/s
+Buffer pool hit rate 1000 / 1000, young-making rate 0 / 1000 not 0 / 1000
+Pages read ahead 0.00/s, evicted without access 0.00/s
+LRU len: 8388605, unzip_LRU len: 0
+I/O sum[1914]:cur[0], unzip sum[0]:cur[0]
+--------------
+ROW OPERATIONS
+--------------
+0 queries inside InnoDB, 0 queries in queue
+11 read views open inside InnoDB
+Main thread process no. 28529, id 140437935073024, state: sleeping
+Number of rows inserted 217582489, updated 81459757, deleted 20128876, read 500031405066
+8.59 inserts/s, 19.70 updates/s, 1.24 deletes/s, 86631.36 reads/s
+------------------------
+LATEST DETECTED DEADLOCK
+------------------------
+111111 18:45:12
+*** (1) TRANSACTION:
+TRANSACTION 88D7813CC, ACTIVE 0 sec, process no 28529, OS thread id 140437815531264 starting index read
+mysql tables in use 1, locked 1
+LOCK WAIT 3 lock struct(s), heap size 1248, 2 row lock(s), undo log entries 1
+MySQL thread id 9633269, query id 3915648018 10.124.62.113 ideeli Updating
+UPDATE `skus` SET `updated_at` = '2011-11-11 18:45:12', `position` = 4 WHERE `id` = 6481750
+*** (1) WAITING FOR THIS LOCK TO BE GRANTED:
+RECORD LOCKS space id 26132 page no 23995 n bits 144 index `PRIMARY` of table `ideeli_production`.`skus` trx id 88D7813CC lock_mode X locks rec but not gap waiting
+*** (2) TRANSACTION:
+TRANSACTION 88D78109E, ACTIVE 2 sec, process no 28529, OS thread id 140437787576064 starting index read
+mysql tables in use 1, locked 1
+3 lock struct(s), heap size 1248, 3 row lock(s), undo log entries 2
+MySQL thread id 9628857, query id 3915648065 10.124.62.114 ideeli Updating
+UPDATE `skus` SET `updated_at` = '2011-11-11 18:45:12', `position` = 5 WHERE `id` = 6481786
+*** (2) HOLDS THE LOCK(S):
+RECORD LOCKS space id 26132 page no 23995 n bits 176 index `PRIMARY` of table `ideeli_production`.`skus` trx id 88D78109E lock_mode X locks rec but not gap
+*** (2) WAITING FOR THIS LOCK TO BE GRANTED:
+RECORD LOCKS space id 26132 page no 23995 n bits 144 index `PRIMARY` of table `ideeli_production`.`skus` trx id 88D78109E lock_mode X locks rec but not gap waiting
+*** WE ROLL BACK TRANSACTION (1)
+------------
+TRANSACTIONS
+------------
+Trx id counter 88D93C364
+Purge done for trx's n:o < 88D9399FB undo n:o < 0
+History list length 167
+... truncated...
+SACTION 88D921DC7, not started, process no 28529, OS thread id 140437832836864
+MySQL thread id 9629126, query id 3918461577 10.124.62.116 ideeli
+---TRANSACTION 88D93AF72, not started, process no 28529, OS thread id 140437787576064
+MySQL thread id 9628857, query id 3918540422 10.124.62.114 ideeli
+---TRANSACTION 88D91D577, not started, process no 28529, OS thread id 140437678978816
+MySQL thread id 9628846, query id 3918339597 10.124.62.114 ideeli
+---TRANSACTION 88D9399B3, not started, process no 28529, OS thread id 140437708797696
+MySQL thread id 9628576, query id 3918539970 10.124.62.115 ideeli
+---TRANSACTION 88D92D6AA, not started, process no 28529, OS thread id 140437708531456
+MySQL thread id 9627279, query id 3918541736 10.124.62.114 ideeli
+---TRANSACTION 88D93AC21, not started, process no 28529, OS thread id 140437828310784
+MySQL thread id 9627128, query id 3918532746 10.124.62.39 ideeli
+---TRANSACTION 88D93BFE6, not started, process no 28529, OS thread id 140437700278016
+MySQL thread id 9626984, query id 3918541213 10.124.62.37 ideeli
+---TRANSACTION 88D93BEDB, not started, process no 28529, OS thread id 140437667264256
+MySQL thread id 9626916, query id 3918540830 10.124.62.39 ideeli
+---TRANSACTION 88D92D8E3, not started, process no 28529, OS thread id 140437664868096
+MySQL thread id 9626387, query id 3918445129 10.124.62.116 ideeli
+---TRANSACTION 88D91D83A, not started, process no 28529, OS thread id 140437675517696
+MySQL thread id 9626199, query id 3918472978 10.124.62.113 ideeli
+---TRANSACTION 88D90873B, not started, process no 28529, OS thread id 140437832304384
+MySQL thread id 9625960, query id 3918534453 10.124.62.113 ideeli
+---TRANSACTION 88D8A5A1A, not started, process no 28529, OS thread id 140437672589056
+MySQL thread id 9624071, query id 3917480177 10.124.62.43 ideeli
+---TRANSACTION 88D938B35, not started, process no 28529, OS thread id 140437684037376
+MySQL thread id 9620612, query id 3918536185 10.124.62.114 ideeli
+---TRANSACTION 88D93BE73, not started, process no 28529, OS thread id 140437700544256
+MySQL thread id 9608812, query id 3918540683 10.124.62.57 ideeli
+---TRANSACTION 88D92A6DB, not started, process no 28529, OS thread id 140437694686976
+MySQL thread id 9608390, query id 3918456745 10.124.62.48 ideeli
+---TRANSACTION 88D8E2770, not started, process no 28529, OS thread id 140437829908224
+MySQL thread id 9608392, query id 3917918758 10.124.62.49 ideeli
+---TRANSACTION 88D93062D, not started, process no 28529, OS thread id 140437799556864
+MySQL thread id 9608344, query id 3918463561 10.124.62.116 ideeli
+---TRANSACTION 88D8E2060, not started, process no 28529, OS thread id 140437793167104
+MySQL thread id 9599801, query id 3917916100 10.124.62.49 ideeli
+---TRANSACTION 88D93B43D, not started, process no 28529, OS thread id 140437675783936
+MySQL thread id 9596124, query id 3918536316 10.124.62.43 ideeli
+---TRANSACTION 88D93C10A, not started, process no 28529, OS thread id 140437663270656
+MySQL thread id 9596115, query id 3918541579 10.124.62.50 ideeli
+---TRANSACTION 88D867CAA, not started, process no 28529, OS thread id 140437825914624
+MySQL thread id 9595872, query id 3917096220 10.124.62.79 ideeli
+---TRANSACTION 88D93C1C8, not started, process no 28529, OS thread id 140437703472896
+MySQL thread id 9595748, query id 3918542315 10.124.62.54 ideeli
+---TRANSACTION 88D938D70, not started, process no 28529, OS thread id 140437677381376
+MySQL thread id 9595673, query id 3918512864 10.124.62.113 ideeli
+---TRANSACTION 88D9375EE, not started, process no 28529, OS thread id 140437820323584
+MySQL thread id 9587201, query id 3918502440 10.124.62.115 ideeli
+---TRANSACTION 88D92C85D, not started, process no 28529, OS thread id 140437832038144
+MySQL thread id 9585490, query id 3918486170 10.124.62.114 ideeli
+---TRANSACTION 88D938F5A, not started, process no 28529, OS thread id 140437698680576
+MySQL thread id 9581494, query id 3918520326 10.124.62.115 ideeli
+---TRANSACTION 88D93C22A, not started, process no 28529, OS thread id 140437829109504
+MySQL thread id 9570949, query id 3918542505 10.124.62.57 ideeli
+---TRANSACTION 0, not started, process no 28529, OS thread id 140437702674176
+MySQL thread id 9568112, query id 3918499735 localhost ideeli_root
+---TRANSACTION 88D92825A, not started, process no 28529, OS thread id 140437666465536
+MySQL thread id 9567084, query id 3918456495 10.124.62.49 ideeli
+---TRANSACTION 88D93B702, not started, process no 28529, OS thread id 140437694420736
+MySQL thread id 9562795, query id 3918537677 10.124.62.50 ideeli
+---TRANSACTION 88D92C780, not started, process no 28529, OS thread id 140437818459904
+MySQL thread id 9564710, query id 3918436465 10.124.62.59 ideeli
+---TRANSACTION 88BA03E88, not started, process no 28529, OS thread id 140437802751744
+MySQL thread id 9564302, query id 3918127652 10.124.62.52 ideeli
+---TRANSACTION 88B9B3633, not started, process no 28529, OS thread id 140437826713344
+MySQL thread id 9563557, query id 3917371747 10.124.62.58 ideeli
+---TRANSACTION 88D934FA8, not started, process no 28529, OS thread id 140437691758336
+MySQL thread id 9563423, query id 3918489042 10.124.62.59 ideeli
+---TRANSACTION 88D936944, not started, process no 28529, OS thread id 140437687498496
+MySQL thread id 9563391, query id 3918497917 10.124.62.59 ideeli
+---TRANSACTION 88B95A5AC, not started, process no 28529, OS thread id 140437786244864
+MySQL thread id 9562904, query id 3918483334 10.124.62.56 ideeli
+---TRANSACTION 88D93930F, not started, process no 28529, OS thread id 140437790238464
+MySQL thread id 9562846, query id 3918522174 10.124.62.114 ideeli
+---TRANSACTION 88D92FFF3, not started, process no 28529, OS thread id 140437795297024
+MySQL thread id 9562798, query id 3918460858 10.124.62.58 ideeli
+---TRANSACTION 88D936D39, not started, process no 28529, OS thread id 140437822985984
+MySQL thread id 9562648, query id 3918499219 10.124.62.55 ideeli
+---TRANSACTION 88B90B4D3, not started, process no 28529, OS thread id 140437666731776
+MySQL thread id 9562521, query id 3916870834 10.124.62.58 ideeli
+---TRANSACTION 88D93969F, not started, process no 28529, OS thread id 140437835499264
+MySQL thread id 9562407, query id 3918518006 10.124.62.58 ideeli
+---TRANSACTION 88D935021, not started, process no 28529, OS thread id 140437712791296
+MySQL thread id 9562377, query id 3918490216 10.124.62.59 ideeli
+---TRANSACTION 88D93186E, not started, process no 28529, OS thread id 140437812070144
+MySQL thread id 9562369, query id 3918469457 10.124.62.59 ideeli
+---TRANSACTION 88D93998E, not started, process no 28529, OS thread id 140437817128704
+MySQL thread id 9562345, query id 3918520415 10.124.62.55 ideeli
+---TRANSACTION 88B8DB40A, not started, process no 28529, OS thread id 140437804881664
+MySQL thread id 9562275, query id 3918147575 10.124.62.58 ideeli
+---TRANSACTION 88D93A2B8, not started, process no 28529, OS thread id 140437674452736
+MySQL thread id 9562238, query id 3918526108 10.124.62.54 ideeli
+---TRANSACTION 88D93AEF6, not started, process no 28529, OS thread id 140437670991616
+MySQL thread id 9562170, query id 3918534124 10.124.62.56 ideeli
+---TRANSACTION 88D938747, not started, process no 28529, OS thread id 140437805147904
+MySQL thread id 9562122, query id 3918509647 10.124.62.55 ideeli
+---TRANSACTION 88B8CD1AD, not started, process no 28529, OS thread id 140437826180864
+MySQL thread id 9562116, query id 3917721806 10.124.62.58 ideeli
+---TRANSACTION 88B8CB0E2, not started, process no 28529, OS thread id 140437706135296
+MySQL thread id 9562081, query id 3917512288 10.124.62.58 ideeli
+---TRANSACTION 88D937F46, not started, process no 28529, OS thread id 140437793433344
+MySQL thread id 9561978, query id 3918506338 10.124.62.53 ideeli
+---TRANSACTION 88D935CEF, not started, process no 28529, OS thread id 140437823518464
+MySQL thread id 9561977, query id 3918493741 10.124.62.52 ideeli
+---TRANSACTION 88D925D35, not started, process no 28529, OS thread id 140437669926656
+MySQL thread id 9561938, query id 3918390292 10.124.62.59 ideeli
+---TRANSACTION 88D9399F7, not started, process no 28529, OS thread id 140437790770944
+MySQL thread id 9561936, query id 3918520574 10.124.62.55 ideeli
+---TRANSACTION 88B8BBF7C, not started, process no 28529, OS thread id 140437678712576
+MySQL thread id 9561886, query id 3916826750 10.124.62.56 ideeli
+---TRANSACTION 88D89A3C1, not started, process no 28529, OS thread id 140437780920064
+MySQL thread id 9561840, query id 3917394470 10.124.62.59 ideeli
+---TRANSACTION 88D8999FF, not started, process no 28529, OS thread id 140437827512064
+MySQL thread id 9561839, query id 3917390509 10.124.62.55 ideeli
+---TRANSACTION 88B8B5FE4, not started, process no 28529, OS thread id 140437710395136
+MySQL thread id 9561803, query id 3917636563 10.124.62.56 ideeli
+---TRANSACTION 88D92F02E, not started, process no 28529, OS thread id 140437807544064
+MySQL thread id 9561797, query id 3918454537 10.124.62.56 ideeli
+---TRANSACTION 88B8B41AE, not started, process no 28529, OS thread id 140437789972224
+MySQL thread id 9561779, query id 3918280210 10.124.62.56 ideeli
+---TRANSACTION 88D925B6D, not started, process no 28529, OS thread id 140437659543296
+MySQL thread id 9561758, query id 3918389745 10.124.62.59 ideeli
+---TRANSACTION 88B8ADF13, not started, process no 28529, OS thread id 140437679511296
+MySQL thread id 9561660, query id 3918125846 10.124.62.52 ideeli
+---TRANSACTION 88B8AB47C, not started, process no 28529, OS thread id 140437972244224
+MySQL thread id 9561634, query id 3918500352 10.124.62.53 ideeli
+---TRANSACTION 88B8AAF00, not started, process no 28529, OS thread id 140437790504704
+MySQL thread id 9561631, query id 3917800790 10.124.62.56 ideeli
+---TRANSACTION 88D93BAA7, not started, process no 28529, OS thread id 140437673654016
+MySQL thread id 9561606, query id 3918539013 10.124.62.52 ideeli
+---TRANSACTION 88D9280CF, not started, process no 28529, OS thread id 140437809940224
+MySQL thread id 9561605, query id 3918402707 10.124.62.53 ideeli
+---TRANSACTION 88D8E7698, not started, process no 28529, OS thread id 140437783848704
+MySQL thread id 9561560, query id 3917967088 10.124.62.52 ideeli
+---TRANSACTION 88D8FAED2, not started, process no 28529, OS thread id 140437707200256
+MySQL thread id 9561498, query id 3918118457 10.124.62.52 ideeli
+---TRANSACTION 88D8FAED5, not started, process no 28529, OS thread id 140437705602816
+MySQL thread id 9561497, query id 3918118464 10.124.62.53 ideeli
+---TRANSACTION 88D93C345, not started, process no 28529, OS thread id 140437791037184
+MySQL thread id 9561411, query id 3918542550 10.124.62.53 ideeli
+---TRANSACTION 88B890263, not started, process no 28529, OS thread id 140437671257856
+MySQL thread id 9561315, query id 3917564606 10.124.62.53 ideeli
+---TRANSACTION 88D93A778, not started, process no 28529, OS thread id 140437800355584
+MySQL thread id 9556210, query id 3918529704 10.124.62.115 ideeli
+---TRANSACTION 88D93A8C6, not started, process no 28529, OS thread id 140437842953984
+MySQL thread id 9547352, query id 3918530983 10.124.62.42 ideeli
+---TRANSACTION 88D71CC0C, not started, process no 28529, OS thread id 140437794232064
+MySQL thread id 9487403, query id 3918542562 10.124.62.24 ideeli
+---TRANSACTION 88D8D9EB9, not started, process no 28529, OS thread id 140437840557824
+MySQL thread id 9487330, query id 3918542578 10.124.62.24 ideeli
+---TRANSACTION 88D8919A2, not started, process no 28529, OS thread id 140437791303424
+MySQL thread id 9500996, query id 3917343842 10.124.62.42 ideeli
+---TRANSACTION 88D88BB0E, not started, process no 28529, OS thread id 140437831505664
+MySQL thread id 9487247, query id 3918542079 10.124.62.29 ideeli
+---TRANSACTION 88D71CFCC, not started, process no 28529, OS thread id 140437803284224
+MySQL thread id 9487235, query id 3918542193 10.124.62.24 ideeli
+---TRANSACTION 88D85C4FE, not started, process no 28529, OS thread id 140437697083136
+MySQL thread id 9487108, query id 3918542186 10.124.62.29 ideeli
+---TRANSACTION 88D862136, not started, process no 28529, OS thread id 140437800888064
+MySQL thread id 9487200, query id 3918541442 10.124.62.29 ideeli
+---TRANSACTION 88D83B9C6, not started, process no 28529, OS thread id 140437680043776
+MySQL thread id 9487347, query id 3918540450 10.124.62.24 ideeli
+---TRANSACTION 88D8C6701, not started, process no 28529, OS thread id 140437691225856
+MySQL thread id 9487220, query id 3918542553 10.124.62.29 ideeli
+---TRANSACTION 88D8A575A, not started, process no 28529, OS thread id 140437688297216
+MySQL thread id 9487243, query id 3918542294 10.124.62.24 ideeli
+---TRANSACTION 88D8D7492, not started, process no 28529, OS thread id 140437690427136
+MySQL thread id 9487401, query id 3918542038 10.124.62.29 ideeli
+---TRANSACTION 88D8C7A76, not started, process no 28529, OS thread id 140437973575424
+MySQL thread id 9487185, query id 3918542552 10.124.62.24 ideeli
+---TRANSACTION 88D8AF8B6, not started, process no 28529, OS thread id 140437564995328
+MySQL thread id 9487158, query id 3918541996 10.124.62.29 ideeli
+---TRANSACTION 88D84CB43, not started, process no 28529, OS thread id 140437827245824
+MySQL thread id 9487241, query id 3918541828 10.124.62.29 ideeli
+---TRANSACTION 88D71CF63, not started, process no 28529, OS thread id 140437833369344
+MySQL thread id 9487348, query id 3918541133 10.124.62.24 ideeli
+---TRANSACTION 88D88D4FC, not started, process no 28529, OS thread id 140437782517504
+MySQL thread id 9487399, query id 3918540443 10.124.62.24 ideeli
+---TRANSACTION 88D86175C, not started, process no 28529, OS thread id 140437842421504
+MySQL thread id 9487324, query id 3918542562 10.124.62.29 ideeli
+---TRANSACTION 88D8F8824, not started, process no 28529, OS thread id 140437782251264
+MySQL thread id 9487199, query id 3918542339 10.124.62.24 ideeli
+---TRANSACTION 88D7E8BB4, not started, process no 28529, OS thread id 140437808609024
+MySQL thread id 9487307, query id 3918542583 10.124.62.24 ideeli
+---TRANSACTION 88D8E5E9B, not started, process no 28529, OS thread id 140437971445504
+MySQL thread id 9487214, query id 3918542436 10.124.62.29 ideeli
+---TRANSACTION 88D909A5D, not started, process no 28529, OS thread id 140437824849664
+MySQL thread id 9487394, query id 3918542582 10.124.62.29 ideeli
+---TRANSACTION 88D854190, not started, process no 28529, OS thread id 140437830706944
+MySQL thread id 9487459, query id 3918540405 10.124.62.24 ideeli
+---TRANSACTION 88D7EC394, not started, process no 28529, OS thread id 140437833635584
+MySQL thread id 9487344, query id 3918542411 10.124.62.29 ideeli
+---TRANSACTION 88D90C069, not started, process no 28529, OS thread id 140437785712384
+MySQL thread id 9487228, query id 3918542126 10.124.62.24 ideeli
+---TRANSACTION 88D8F6E92, not started, process no 28529, OS thread id 140437689894656
+MySQL thread id 9487234, query id 3918542513 10.124.62.29 ideeli
+---TRANSACTION 88D93BF02, not started, process no 28529, OS thread id 140437828044544
+MySQL thread id 9487182, query id 3918542514 10.124.62.109 ideeli
+---TRANSACTION 88D938855, not started, process no 28529, OS thread id 140437818726144
+MySQL thread id 9487207, query id 3918542407 10.124.62.24 ideeli
+---TRANSACTION 88D7EB4CD, not started, process no 28529, OS thread id 140437707998976
+MySQL thread id 9487148, query id 3918542482 10.124.62.29 ideeli
+---TRANSACTION 88D93A68E, not started, process no 28529, OS thread id 140437836830464
+MySQL thread id 9487174, query id 3918542551 10.124.62.101 ideeli
+---TRANSACTION 88D93B12A, not started, process no 28529, OS thread id 140437821388544
+MySQL thread id 9487786, query id 3918535185 10.124.62.99 ideeli
+---TRANSACTION 88D93AA02, not started, process no 28529, OS thread id 140437705070336
+MySQL thread id 9487142, query id 3918542319 10.124.62.111 ideeli
+---TRANSACTION 88D93A52C, not started, process no 28529, OS thread id 140437808875264
+MySQL thread id 9488063, query id 3918528049 10.124.62.97 ideeli
+---TRANSACTION 88D93BDAB, not started, process no 28529, OS thread id 140437697349376
+MySQL thread id 9487169, query id 3918542536 10.124.62.109 ideeli
+---TRANSACTION 88D93A032, not started, process no 28529, OS thread id 140437684569856
+MySQL thread id 9487262, query id 3918542250 10.124.62.106 ideeli
+---TRANSACTION 88D939D84, not started, process no 28529, OS thread id 140437801686784
+MySQL thread id 9488018, query id 3918522072 10.124.62.97 ideeli
+---TRANSACTION 88D93BF85, not started, process no 28529, OS thread id 140437692290816
+MySQL thread id 9487114, query id 3918542498 10.124.62.106 ideeli
+---TRANSACTION 88D93C036, not started, process no 28529, OS thread id 140437699479296
+MySQL thread id 9487296, query id 3918541975 10.124.62.110 ideeli
+---TRANSACTION 88D93C0B7, not started, process no 28529, OS thread id 140437802485504
+MySQL thread id 9487981, query id 3918541433 10.124.62.91 ideeli
+---TRANSACTION 88D93875F, not started, process no 28529, OS thread id 140437803816704
+MySQL thread id 9487978, query id 3918509447 10.124.62.97 ideeli
+---TRANSACTION 88D93BE21, not started, process no 28529, OS thread id 140437815265024
+MySQL thread id 9487972, query id 3918540588 10.124.62.99 ideeli
+---TRANSACTION 88D93B868, not started, process no 28529, OS thread id 140437820589824
+MySQL thread id 9487827, query id 3918538267 10.124.62.91 ideeli
+---TRANSACTION 88D93BD56, not started, process no 28529, OS thread id 140437805414144
+MySQL thread id 9487957, query id 3918540342 10.124.62.99 ideeli
+---TRANSACTION 88D93BF82, not started, process no 28529, OS thread id 140437805946624
+MySQL thread id 9487956, query id 3918541081 10.124.62.90 ideeli
+---TRANSACTION 88D93C17A, not started, process no 28529, OS thread id 140437806479104
+MySQL thread id 9487952, query id 3918541912 10.124.62.89 ideeli
+---TRANSACTION 88D93BB24, not started, process no 28529, OS thread id 140437821654784
+MySQL thread id 9487838, query id 3918539309 10.124.62.99 ideeli
+---TRANSACTION 88D93B424, not started, process no 28529, OS thread id 140437692557056
+MySQL thread id 9487172, query id 3918542328 10.124.62.102 ideeli
+---TRANSACTION 88D93BF49, not started, process no 28529, OS thread id 140437813667584
+MySQL thread id 9487912, query id 3918540980 10.124.62.98 ideeli
+---TRANSACTION 88D93C10D, not started, process no 28529, OS thread id 140437693355776
+MySQL thread id 9487134, query id 3918541582 10.124.62.108 ideeli
+---TRANSACTION 88D93B860, not started, process no 28529, OS thread id 140437969049344
+MySQL thread id 9487869, query id 3918538256 10.124.62.99 ideeli
+---TRANSACTION 88D93BDF4, not started, process no 28529, OS thread id 140437811271424
+MySQL thread id 9487894, query id 3918540537 10.124.62.89 ideeli
+---TRANSACTION 88D93C35E, not started, process no 28529, OS thread id 140437974374144
+MySQL thread id 9487824, query id 3918542578 10.124.62.90 ideeli
+---TRANSACTION 88D93A570, not started, process no 28529, OS thread id 140437813933824
+MySQL thread id 9487882, query id 3918528328 10.124.62.98 ideeli
+---TRANSACTION 88D93AE91, not started, process no 28529, OS thread id 140437830973184
+MySQL thread id 9487872, query id 3918533974 10.124.62.90 ideeli
+---TRANSACTION 88D93A29F, not started, process no 28529, OS thread id 140437804615424
+MySQL thread id 9487857, query id 3918525944 10.124.62.97 ideeli
+---TRANSACTION 88D93C162, not started, process no 28529, OS thread id 140437667530496
+MySQL thread id 9487839, query id 3918541840 10.124.62.90 ideeli
+---TRANSACTION 88D93AC6E, not started, process no 28529, OS thread id 140437840291584
+MySQL thread id 9487164, query id 3918542066 10.124.62.102 ideeli
+---TRANSACTION 88D93C06D, not started, process no 28529, OS thread id 140437822719744
+MySQL thread id 9487852, query id 3918541359 10.124.62.89 ideeli
+---TRANSACTION 88D93BD79, not started, process no 28529, OS thread id 140437812602624
+MySQL thread id 9487847, query id 3918540377 10.124.62.91 ideeli
+---TRANSACTION 88D939F7B, not started, process no 28529, OS thread id 140437840824064
+MySQL thread id 9487842, query id 3918523577 10.124.62.99 ideeli
+---TRANSACTION 88D93BAA8, not started, process no 28529, OS thread id 140437816862464
+MySQL thread id 9487830, query id 3918539014 10.124.62.98 ideeli
+---TRANSACTION 88D939C3E, not started, process no 28529, OS thread id 140437705336576
+MySQL thread id 9487808, query id 3918521521 10.124.62.91 ideeli
+---TRANSACTION 88D93BFC1, not started, process no 28529, OS thread id 140437822453504
+MySQL thread id 9487797, query id 3918541176 10.124.62.89 ideeli
+---TRANSACTION 88D93BE1B, not started, process no 28529, OS thread id 140437663803136
+MySQL thread id 9487092, query id 3918542020 10.124.62.105 ideeli
+---TRANSACTION 88D93C01E, not started, process no 28529, OS thread id 140437810206464
+MySQL thread id 9487795, query id 3918541280 10.124.62.90 ideeli
+---TRANSACTION 88D93A6B3, not started, process no 28529, OS thread id 140437697615616
+MySQL thread id 9487128, query id 3918542026 10.124.62.106 ideeli
+---TRANSACTION 88D93B528, not started, process no 28529, OS thread id 140437816596224
+MySQL thread id 9487785, query id 3918536722 10.124.62.89 ideeli
+---TRANSACTION 88D93BFC5, not started, process no 28529, OS thread id 140437827778304
+MySQL thread id 9487405, query id 3918541520 10.124.62.105 ideeli
+---TRANSACTION 88D910ECF, not started, process no 28529, OS thread id 140437817394944
+MySQL thread id 9487407, query id 3918540442 10.124.62.24 ideeli
+---TRANSACTION 88D93B65E, not started, process no 28529, OS thread id 140437788108544
+MySQL thread id 9487730, query id 3918537327 10.124.62.97 ideeli
+---TRANSACTION 88D93A421, not started, process no 28529, OS thread id 140437836297984
+MySQL thread id 9487729, query id 3918527084 10.124.62.90 ideeli
+---TRANSACTION 88D93C359, not started, process no 28529, OS thread id 140437566326528
+MySQL thread id 9487728, query id 3918542573 10.124.62.91 ideeli
+---TRANSACTION 88D9370CB, not started, process no 28529, OS thread id 140437817927424
+MySQL thread id 9487398, query id 3918542133 10.124.62.29 ideeli
+---TRANSACTION 88D93AEFF, not started, process no 28529, OS thread id 140437796894464
+MySQL thread id 9487716, query id 3918534140 10.124.62.98 ideeli
+---TRANSACTION 88D93BA8E, not started, process no 28529, OS thread id 140437837362944
+MySQL thread id 9487341, query id 3918541768 10.124.62.103 ideeli
+---TRANSACTION 88D93C1AE, not started, process no 28529, OS thread id 140437667796736
+MySQL thread id 9487109, query id 3918542386 10.124.62.104 ideeli
+---TRANSACTION 88D939E83, not started, process no 28529, OS thread id 140437976770304
+MySQL thread id 9487122, query id 3918539053 10.124.62.108 ideeli
+---TRANSACTION 88D93C1C5, not started, process no 28529, OS thread id 140437836564224
+MySQL thread id 9487337, query id 3918542102 10.124.62.111 ideeli
+---TRANSACTION 88D93AFDD, not started, process no 28529, OS thread id 140437670459136
+MySQL thread id 9487175, query id 3918542129 10.124.62.108 ideeli
+---TRANSACTION 88D93C1A6, not started, process no 28529, OS thread id 140437842687744
+MySQL thread id 9487323, query id 3918542406 10.124.62.103 ideeli
+---TRANSACTION 88D93BB41, not started, process no 28529, OS thread id 140437800089344
+MySQL thread id 9487193, query id 3918541845 10.124.62.103 ideeli
+---TRANSACTION 88D93AF67, not started, process no 28529, OS thread id 140437692024576
+MySQL thread id 9487221, query id 3918542583 10.124.62.111 ideeli
+---TRANSACTION 88D93C125, not started, process no 28529, OS thread id 140437821921024
+MySQL thread id 9487260, query id 3918541627 10.124.62.112 ideeli
+---TRANSACTION 88D93AE1A, not started, process no 28529, OS thread id 140437793965824
+MySQL thread id 9487112, query id 3918542347 10.124.62.103 ideeli
+---TRANSACTION 88D93A59C, not started, process no 28529, OS thread id 140437841622784
+MySQL thread id 9487326, query id 3918542262 10.124.62.107 ideeli
+---TRANSACTION 88D93AB1C, not started, process no 28529, OS thread id 140437969315584
+MySQL thread id 9487208, query id 3918541915 10.124.62.111 ideeli
+---TRANSACTION 88D93BB0C, not started, process no 28529, OS thread id 140437696284416
+MySQL thread id 9487129, query id 3918541251 10.124.62.109 ideeli
+---TRANSACTION 88D93C165, not started, process no 28529, OS thread id 140437971977984
+MySQL thread id 9487229, query id 3918541865 10.124.62.109 ideeli
+---TRANSACTION 88D938F9D, not started, process no 28529, OS thread id 140437976504064
+MySQL thread id 9487154, query id 3918542415 10.124.62.106 ideeli
+---TRANSACTION 88D93C35F, not started, process no 28529, OS thread id 140437797693184
+MySQL thread id 9487194, query id 3918542579 10.124.62.111 ideeli
+---TRANSACTION 88D93B339, not started, process no 28529, OS thread id 140437797160704
+MySQL thread id 9487171, query id 3918542436 10.124.62.112 ideeli
+---TRANSACTION 88D93ADA6, not started, process no 28529, OS thread id 140437839759104
+MySQL thread id 9487331, query id 3918542116 10.124.62.105 ideeli
+---TRANSACTION 88D93BD9A, not started, process no 28529, OS thread id 140437811803904
+MySQL thread id 9487166, query id 3918542552 10.124.62.107 ideeli
+---TRANSACTION 88D93BFC7, not started, process no 28529, OS thread id 140437814732544
+MySQL thread id 9487266, query id 3918542420 10.124.62.111 ideeli
+---TRANSACTION 88D93A06D, not started, process no 28529, OS thread id 140437783049984
+MySQL thread id 9487156, query id 3918541880 10.124.62.105 ideeli
+---TRANSACTION 88D93B1BD, not started, process no 28529, OS thread id 140437831771904
+MySQL thread id 9487297, query id 3918542052 10.124.62.107 ideeli
+---TRANSACTION 88D939F21, not started, process no 28529, OS thread id 140437973309184
+MySQL thread id 9487314, query id 3918540816 10.124.62.112 ideeli
+---TRANSACTION 88D93BD86, not started, process no 28529, OS thread id 140437788374784
+MySQL thread id 9487213, query id 3918542023 10.124.62.106 ideeli
+---TRANSACTION 88D93C346, not started, process no 28529, OS thread id 140437804349184
+MySQL thread id 9487103, query id 3918542551 10.124.62.105 ideeli
+---TRANSACTION 88D93BDA8, not started, process no 28529, OS thread id 140437837096704
+MySQL thread id 9487095, query id 3918541955 10.124.62.106 ideeli
+---TRANSACTION 88D93BECA, not started, process no 28529, OS thread id 140437696018176
+MySQL thread id 9487285, query id 3918542107 10.124.62.101 ideeli
+---TRANSACTION 88D93BAEE, not started, process no 28529, OS thread id 140437914806016
+MySQL thread id 9487263, query id 3918542290 10.124.62.111 ideeli
+---TRANSACTION 88D93AB87, not started, process no 28529, OS thread id 140437798491904
+MySQL thread id 9487146, query id 3918542464 10.124.62.103 ideeli
+---TRANSACTION 88D93B0DB, not started, process no 28529, OS thread id 140437814998784
+MySQL thread id 9487093, query id 3918541944 10.124.62.112 ideeli
+---TRANSACTION 88D93C19C, not started, process no 28529, OS thread id 140437685901056
+MySQL thread id 9487289, query id 3918542473 10.124.62.103 ideeli
+---TRANSACTION 88D93BB4C, not started, process no 28529, OS thread id 140437970380544
+MySQL thread id 9487318, query id 3918542383 10.124.62.109 ideeli
+---TRANSACTION 88D93C193, not started, process no 28529, OS thread id 140437973042944
+MySQL thread id 9487315, query id 3918541978 10.124.62.101 ideeli
+---TRANSACTION 88D93BF41, not started, process no 28529, OS thread id 140437793699584
+MySQL thread id 9487357, query id 3918540968 10.124.62.101 ideeli
+---TRANSACTION 88D93BB49, not started, process no 28529, OS thread id 140437819791104
+MySQL thread id 9487294, query id 3918542552 10.124.62.112 ideeli
+---TRANSACTION 88D93B5F0, not started, process no 28529, OS thread id 140437713057536
+MySQL thread id 9487280, query id 3918542212 10.124.62.110 ideeli
+---TRANSACTION 88D93C2EB, not started, process no 28529, OS thread id 140437834966784
+MySQL thread id 9487096, query id 3918542458 10.124.62.107 ideeli
+---TRANSACTION 88D93B22F, not started, process no 28529, OS thread id 140437838694144
+MySQL thread id 9487216, query id 3918542582 10.124.62.102 ideeli
+---TRANSACTION 88D93B242, not started, process no 28529, OS thread id 140437801154304
+MySQL thread id 9487250, query id 3918541505 10.124.62.104 ideeli
+---TRANSACTION 88D93ADC5, not started, process no 28529, OS thread id 140437813135104
+MySQL thread id 9487135, query id 3918539113 10.124.62.104 ideeli
+---TRANSACTION 88D93C021, not started, process no 28529, OS thread id 140437832570624
+MySQL thread id 9487150, query id 3918542013 10.124.62.107 ideeli
+---TRANSACTION 88D93A414, not started, process no 28529, OS thread id 140437818193664
+MySQL thread id 9487254, query id 3918542109 10.124.62.112 ideeli
+---TRANSACTION 88D93C285, not started, process no 28529, OS thread id 140437820057344
+MySQL thread id 9487188, query id 3918542355 10.124.62.110 ideeli
+---TRANSACTION 88D93BB07, not started, process no 28529, OS thread id 140437834434304
+MySQL thread id 9487252, query id 3918540613 10.124.62.104 ideeli
+---TRANSACTION 88D93BE54, not started, process no 28529, OS thread id 140437780653824
+MySQL thread id 9487206, query id 3918540649 10.124.62.104 ideeli
+---TRANSACTION 88D93A2DB, not started, process no 28529, OS thread id 140437837629184
+MySQL thread id 9487335, query id 3918541859 10.124.62.111 ideeli
+---TRANSACTION 88D93B7B3, not started, process no 28529, OS thread id 140437688030976
+MySQL thread id 9487130, query id 3918542158 10.124.62.106 ideeli
+---TRANSACTION 88D93C33F, not started, process no 28529, OS thread id 140437972510464
+MySQL thread id 9487218, query id 3918542545 10.124.62.112 ideeli
+---TRANSACTION 88D93BDAA, not started, process no 28529, OS thread id 140437690160896
+MySQL thread id 9487125, query id 3918542273 10.124.62.105 ideeli
+---TRANSACTION 88D93C2B6, not started, process no 28529, OS thread id 140437808076544
+MySQL thread id 9487215, query id 3918542405 10.124.62.107 ideeli
+---TRANSACTION 88D93A2A8, not started, process no 28529, OS thread id 140437975971584
+MySQL thread id 9487099, query id 3918542253 10.124.62.104 ideeli
+---TRANSACTION 88D9386B2, not started, process no 28529, OS thread id 140437838427904
+MySQL thread id 9487334, query id 3918542485 10.124.62.110 ideeli
+---TRANSACTION 88D93A65E, not started, process no 28529, OS thread id 140437970913024
+MySQL thread id 9487151, query id 3918542064 10.124.62.109 ideeli
+---TRANSACTION 88D93B74C, not started, process no 28529, OS thread id 140437571917568
+MySQL thread id 9487106, query id 3918542553 10.124.62.108 ideeli
+---TRANSACTION 88D93BEE2, not started, process no 28529, OS thread id 140437694953216
+MySQL thread id 9487107, query id 3918540839 10.124.62.108 ideeli
+---TRANSACTION 88D93C347, not started, process no 28529, OS thread id 140437701875456
+MySQL thread id 9487090, query id 3918542552 10.124.62.110 ideeli
+---TRANSACTION 88D93A74E, not started, process no 28529, OS thread id 140437681641216
+MySQL thread id 9487149, query id 3918542077 10.124.62.101 ideeli
+---TRANSACTION 88D93C34C, not started, process no 28529, OS thread id 140437816063744
+MySQL thread id 9487264, query id 3918542560 10.124.62.109 ideeli
+---TRANSACTION 88D938CE8, not started, process no 28529, OS thread id 140437838161664
+MySQL thread id 9487212, query id 3918541206 10.124.62.110 ideeli
+---TRANSACTION 88D93B5B0, not started, process no 28529, OS thread id 140437970114304
+MySQL thread id 9487320, query id 3918541092 10.124.62.109 ideeli
+---TRANSACTION 88D93C1B5, not started, process no 28529, OS thread id 140437801953024
+MySQL thread id 9487133, query id 3918542077 10.124.62.110 ideeli
+---TRANSACTION 88D93C19D, not started, process no 28529, OS thread id 140437805680384
+MySQL thread id 9487136, query id 3918542552 10.124.62.111 ideeli
+---TRANSACTION 88D93BB3E, not started, process no 28529, OS thread id 140582149637888
+MySQL thread id 9487301, query id 3918542308 10.124.62.105 ideeli
+---TRANSACTION 88D93AFDF, not started, process no 28529, OS thread id 140437785978624
+MySQL thread id 9487303, query id 3918542066 10.124.62.106 ideeli
+---TRANSACTION 88D93C1E0, not started, process no 28529, OS thread id 140437803550464
+MySQL thread id 9487126, query id 3918542570 10.124.62.101 ideeli
+---TRANSACTION 88D93C12F, not started, process no 28529, OS thread id 140437824050944
+MySQL thread id 9487395, query id 3918541858 10.124.62.104 ideeli
+---TRANSACTION 88D93BF9C, not started, process no 28529, OS thread id 140437971711744
+MySQL thread id 9487162, query id 3918542218 10.124.62.102 ideeli
+---TRANSACTION 88D93C17F, not started, process no 28529, OS thread id 140437825382144
+MySQL thread id 9487121, query id 3918542583 10.124.62.110 ideeli
+---TRANSACTION 88D93BE00, not started, process no 28529, OS thread id 140437575378688
+MySQL thread id 9487179, query id 3918542419 10.124.62.110 ideeli
+---TRANSACTION 88D93BF03, not started, process no 28529, OS thread id 140437791835904
+MySQL thread id 9487345, query id 3918542466 10.124.62.110 ideeli
+---TRANSACTION 88D935EEB, not started, process no 28529, OS thread id 140437792102144
+MySQL thread id 9487101, query id 3918538667 10.124.62.102 ideeli
+---TRANSACTION 88D93C1FD, not started, process no 28529, OS thread id 140437975705344
+MySQL thread id 9487416, query id 3918542430 10.124.62.112 ideeli
+---TRANSACTION 88D93AADC, not started, process no 28529, OS thread id 140437975439104
+MySQL thread id 9487308, query id 3918542562 10.124.62.107 ideeli
+---TRANSACTION 88D93A4C1, not started, process no 28529, OS thread id 140437971179264
+MySQL thread id 9487124, query id 3918542546 10.124.62.111 ideeli
+---TRANSACTION 88D93BDAC, not started, process no 28529, OS thread id 140437712525056
+MySQL thread id 9487165, query id 3918542524 10.124.62.104 ideeli
+---TRANSACTION 88D93C2F5, not started, process no 28529, OS thread id 140437969848064
+MySQL thread id 9487321, query id 3918542468 10.124.62.102 ideeli
+---TRANSACTION 88D8E6B36, not started, process no 28529, OS thread id 140437975172864
+MySQL thread id 9487309, query id 3918542370 10.124.62.24 ideeli
+---TRANSACTION 88D938ED5, not started, process no 28529, OS thread id 140437673121536
+MySQL thread id 9487232, query id 3918542454 10.124.62.108 ideeli
+---TRANSACTION 88D93B895, not started, process no 28529, OS thread id 140437701609216
+MySQL thread id 9487267, query id 3918541726 10.124.62.105 ideeli
+---TRANSACTION 88D93B8D6, not started, process no 28529, OS thread id 140437974906624
+MySQL thread id 9487310, query id 3918538599 10.124.62.103 ideeli
+---TRANSACTION 88D93C0EA, not started, process no 28529, OS thread id 140437699213056
+MySQL thread id 9487258, query id 3918541882 10.124.62.108 ideeli
+---TRANSACTION 88D93A6DF, not started, process no 28529, OS thread id 140437784913664
+MySQL thread id 9487230, query id 3918541888 10.124.62.102 ideeli
+---TRANSACTION 88D93AA1E, not started, process no 28529, OS thread id 140437710661376
+MySQL thread id 9487183, query id 3918542402 10.124.62.101 ideeli
+---TRANSACTION 88D93BB33, not started, process no 28529, OS thread id 140437695751936
+MySQL thread id 9487081, query id 3918542580 10.124.62.112 ideeli
+---TRANSACTION 88D93BD9F, not started, process no 28529, OS thread id 140437781452544
+MySQL thread id 9487261, query id 3918542078 10.124.62.110 ideeli
+---TRANSACTION 88D93B219, not started, process no 28529, OS thread id 140437833103104
+MySQL thread id 9487217, query id 3918542184 10.124.62.107 ideeli
+---TRANSACTION 88D93BFBE, not started, process no 28529, OS thread id 140437820856064
+MySQL thread id 9487219, query id 3918541173 10.124.62.101 ideeli
+---TRANSACTION 88D93BA04, not started, process no 28529, OS thread id 140437686966016
+MySQL thread id 9487299, query id 3918542450 10.124.62.107 ideeli
+---TRANSACTION 88D93B3C6, not started, process no 28529, OS thread id 140437670725376
+MySQL thread id 9487253, query id 3918541984 10.124.62.108 ideeli
+---TRANSACTION 88D93A358, not started, process no 28529, OS thread id 140437840025344
+MySQL thread id 9487329, query id 3918526595 10.124.62.97 ideeli
+---TRANSACTION 88D93B924, not started, process no 28529, OS thread id 140437823784704
+MySQL thread id 9487439, query id 3918538603 10.124.62.90 ideeli
+---TRANSACTION 88D8A40E3, not started, process no 28529, OS thread id 140437697881856
+MySQL thread id 9487231, query id 3918542026 10.124.62.29 ideeli
+---TRANSACTION 88D93A93B, not started, process no 28529, OS thread id 140437786511104
+MySQL thread id 9487340, query id 3918542080 10.124.62.112 ideeli
+---TRANSACTION 88D93B090, not started, process no 28529, OS thread id 140437802219264
+MySQL thread id 9487223, query id 3918542415 10.124.62.102 ideeli
+---TRANSACTION 88D92FE87, not started, process no 28529, OS thread id 140437973841664
+MySQL thread id 9487270, query id 3918542352 10.124.62.102 ideeli
+---TRANSACTION 88D938D98, not started, process no 28529, OS thread id 140437701076736
+MySQL thread id 9487251, query id 3918541777 10.124.62.107 ideeli
+---TRANSACTION 88D93AC40, not started, process no 28529, OS thread id 140437682972416
+MySQL thread id 9487141, query id 3918541992 10.124.62.105 ideeli
+---TRANSACTION 88D93B7BF, not started, process no 28529, OS thread id 140437915604736
+MySQL thread id 9487087, query id 3918542554 10.124.62.108 ideeli
+---TRANSACTION 88D9398F7, not started, process no 28529, OS thread id 140437567391488
+MySQL thread id 9487203, query id 3918542364 10.124.62.108 ideeli
+---TRANSACTION 88D93A0B5, not started, process no 28529, OS thread id 140437566060288
+MySQL thread id 9487273, query id 3918541319 10.124.62.104 ideeli
+---TRANSACTION 88D93A76B, not started, process no 28529, OS thread id 140437794498304
+MySQL thread id 9487236, query id 3918541590 10.124.62.110 ideeli
+---TRANSACTION 88D93A6EF, not started, process no 28529, OS thread id 140437830174464
+MySQL thread id 9487168, query id 3918542422 10.124.62.111 ideeli
+---TRANSACTION 88D93C179, not started, process no 28529, OS thread id 140437795563264
+MySQL thread id 9487176, query id 3918541910 10.124.62.103 ideeli
+---TRANSACTION 88D93B2BF, not started, process no 28529, OS thread id 140437787842304
+MySQL thread id 9487237, query id 3918542328 10.124.62.109 ideeli
+---TRANSACTION 88D93BFEE, not started, process no 28529, OS thread id 140437825115904
+MySQL thread id 9487409, query id 3918541221 10.124.62.103 ideeli
+---TRANSACTION 88D93ADC6, not started, process no 28529, OS thread id 140437685102336
+MySQL thread id 9487186, query id 3918542300 10.124.62.101 ideeli
+---TRANSACTION 88D93AA12, not started, process no 28529, OS thread id 140437702141696
+MySQL thread id 9487256, query id 3918542084 10.124.62.109 ideeli
+---TRANSACTION 88D93B7BB, not started, process no 28529, OS thread id 140437670192896
+MySQL thread id 9487170, query id 3918542156 10.124.62.107 ideeli
+---TRANSACTION 88D93C129, not started, process no 28529, OS thread id 140437689362176
+MySQL thread id 9487429, query id 3918541639 10.124.62.98 ideeli
+---TRANSACTION 88D939FEF, not started, process no 28529, OS thread id 140437678446336
+MySQL thread id 9487119, query id 3918542014 10.124.62.102 ideeli
+---TRANSACTION 88D93B10E, not started, process no 28529, OS thread id 140437674985216
+MySQL thread id 9487094, query id 3918542430 10.124.62.109 ideeli
+---TRANSACTION 88D93B74B, not started, process no 28529, OS thread id 140437792368384
+MySQL thread id 9487145, query id 3918541648 10.124.62.111 ideeli
+---TRANSACTION 88D93B8B7, not started, process no 28529, OS thread id 140437821122304
+MySQL thread id 9487144, query id 3918542038 10.124.62.110 ideeli
+---TRANSACTION 88D93A97B, not started, process no 28529, OS thread id 140437811537664
+MySQL thread id 9487265, query id 3918542047 10.124.62.105 ideeli
+---TRANSACTION 88D93B97A, not started, process no 28529, OS thread id 140437826447104
+MySQL thread id 9487198, query id 3918542009 10.124.62.112 ideeli
+---TRANSACTION 88D93BDE8, not started, process no 28529, OS thread id 140437688563456
+MySQL thread id 9487244, query id 3918542208 10.124.62.103 ideeli
+---TRANSACTION 88D93B015, not started, process no 28529, OS thread id 140437568722688
+MySQL thread id 9487137, query id 3918542050 10.124.62.101 ideeli
+---TRANSACTION 88D93BD2D, not started, process no 28529, OS thread id 140437812868864
+MySQL thread id 9487246, query id 3918542102 10.124.62.107 ideeli
+---TRANSACTION 88D93BD0E, not started, process no 28529, OS thread id 140437807277824
+MySQL thread id 9487346, query id 3918542399 10.124.62.106 ideeli
+---TRANSACTION 88D939F56, not started, process no 28529, OS thread id 140437794764544
+MySQL thread id 9487110, query id 3918541779 10.124.62.111 ideeli
+---TRANSACTION 88D93AFA9, not started, process no 28529, OS thread id 140437835765504
+MySQL thread id 9487163, query id 3918542555 10.124.62.103 ideeli
+---TRANSACTION 88D93AFFD, not started, process no 28529, OS thread id 140437695485696
+MySQL thread id 9487140, query id 3918542129 10.124.62.110 ideeli
+---TRANSACTION 88D93B274, not started, process no 28529, OS thread id 140437784647424
+MySQL thread id 9487105, query id 3918539130 10.124.62.109 ideeli
+---TRANSACTION 88D93C183, not started, process no 28529, OS thread id 140437662205696
+MySQL thread id 9487210, query id 3918541937 10.124.62.108 ideeli
+---TRANSACTION 88D93AFB2, not started, process no 28529, OS thread id 140437694154496
+MySQL thread id 9487390, query id 3918539249 10.124.62.108 ideeli
+---TRANSACTION 88D937672, not started, process no 28529, OS thread id 140437565261568
+MySQL thread id 9487113, query id 3918540467 10.124.62.101 ideeli
+---TRANSACTION 88D93C170, not started, process no 28529, OS thread id 140437833901824
+MySQL thread id 9487173, query id 3918541889 10.124.62.106 ideeli
+---TRANSACTION 88D93A109, not started, process no 28529, OS thread id 140437837895424
+MySQL thread id 9487120, query id 3918541881 10.124.62.102 ideeli
+---TRANSACTION 88D93C13D, not started, process no 28529, OS thread id 140437687232256
+MySQL thread id 9487233, query id 3918541736 10.124.62.112 ideeli
+---TRANSACTION 88D93C19F, not started, process no 28529, OS thread id 140437828843264
+MySQL thread id 9487389, query id 3918542015 10.124.62.104 ideeli
+---TRANSACTION 88D93B3F0, not started, process no 28529, OS thread id 140437787309824
+MySQL thread id 9487268, query id 3918541311 10.124.62.109 ideeli
+---TRANSACTION 88D93B433, not started, process no 28529, OS thread id 140437789173504
+MySQL thread id 9487160, query id 3918542552 10.124.62.101 ideeli
+---TRANSACTION 88D93C1AA, not started, process no 28529, OS thread id 140437816329984
+MySQL thread id 9487242, query id 3918542549 10.124.62.106 ideeli
+---TRANSACTION 88D93B471, not started, process no 28529, OS thread id 140437786777344
+MySQL thread id 9487177, query id 3918542269 10.124.62.112 ideeli
+---TRANSACTION 88D93BFDA, not started, process no 28529, OS thread id 140437829375744
+MySQL thread id 9487191, query id 3918542179 10.124.62.101 ideeli
+---TRANSACTION 88D93C0F5, not started, process no 28529, OS thread id 140437696816896
+MySQL thread id 9487116, query id 3918541564 10.124.62.109 ideeli
+---TRANSACTION 88D93AD91, not started, process no 28529, OS thread id 140437658744576
+MySQL thread id 9487209, query id 3918542246 10.124.62.109 ideeli
+---TRANSACTION 88D93C215, not started, process no 28529, OS thread id 140437687764736
+MySQL thread id 9487227, query id 3918542227 10.124.62.106 ideeli
+---TRANSACTION 88D93C34A, not started, process no 28529, OS thread id 140437799290624
+MySQL thread id 9487295, query id 3918542556 10.124.62.104 ideeli
+---TRANSACTION 88D93848C, not started, process no 28529, OS thread id 140437571651328
+MySQL thread id 9487084, query id 3918542313 10.124.62.104 ideeli
+---TRANSACTION 88D939A5D, not started, process no 28529, OS thread id 140437824317184
+MySQL thread id 9487111, query id 3918541896 10.124.62.105 ideeli
+---TRANSACTION 88D93BAB1, not started, process no 28529, OS thread id 140437831239424
+MySQL thread id 9487269, query id 3918542301 10.124.62.107 ideeli
+---TRANSACTION 88D936450, not started, process no 28529, OS thread id 140437838960384
+MySQL thread id 9487333, query id 3918496189 10.124.62.97 ideeli
+---TRANSACTION 88D93A808, not started, process no 28529, OS thread id 140437796361984
+MySQL thread id 9487211, query id 3918542576 10.124.62.105 ideeli
+---TRANSACTION 88D93ADF3, not started, process no 28529, OS thread id 140437841356544
+MySQL thread id 9487327, query id 3918533704 10.124.62.89 ideeli
+---TRANSACTION 88D93B65F, not started, process no 28529, OS thread id 140437842155264
+MySQL thread id 9487325, query id 3918537328 10.124.62.91 ideeli
+---TRANSACTION 88D93B212, not started, process no 28529, OS thread id 140437808342784
+MySQL thread id 9487083, query id 3918542576 10.124.62.103 ideeli
+---TRANSACTION 88D9373FA, not started, process no 28529, OS thread id 140437915870976
+MySQL thread id 9487322, query id 3918501610 10.124.62.98 ideeli
+---TRANSACTION 88D93BF73, not started, process no 28529, OS thread id 140437969581824
+MySQL thread id 9487153, query id 3918542381 10.124.62.112 ideeli
+---TRANSACTION 88D93C24B, not started, process no 28529, OS thread id 140437568456448
+MySQL thread id 9487204, query id 3918542297 10.124.62.101 ideeli
+---TRANSACTION 88D938868, not started, process no 28529, OS thread id 140437972776704
+MySQL thread id 9487316, query id 3918510047 10.124.62.89 ideeli
+---TRANSACTION 88D93BF45, not started, process no 28529, OS thread id 140437814466304
+MySQL thread id 9487195, query id 3918542043 10.124.62.108 ideeli
+---TRANSACTION 88D93BC90, not started, process no 28529, OS thread id 140437571385088
+MySQL thread id 9487205, query id 3918542565 10.124.62.102 ideeli
+---TRANSACTION 88D93B0B8, not started, process no 28529, OS thread id 140437974107904
+MySQL thread id 9487312, query id 3918535016 10.124.62.91 ideeli
+---TRANSACTION 88D9389B0, not started, process no 28529, OS thread id 140437974640384
+MySQL thread id 9487311, query id 3918542444 10.124.62.101 ideeli
+---TRANSACTION 88D93C354, not started, process no 28529, OS thread id 140437830440704
+MySQL thread id 9487245, query id 3918542568 10.124.62.106 ideeli
+---TRANSACTION 88D93BEF5, not started, process no 28529, OS thread id 140437976237824
+MySQL thread id 9487305, query id 3918540863 10.124.62.99 ideeli
+---TRANSACTION 88D93C335, not started, process no 28529, OS thread id 140437699745536
+MySQL thread id 9487184, query id 3918542535 10.124.62.102 ideeli
+---TRANSACTION 88D93BD93, not started, process no 28529, OS thread id 140582149904128
+MySQL thread id 9487304, query id 3918540412 10.124.62.98 ideeli
+---TRANSACTION 88D9371F7, not started, process no 28529, OS thread id 140437824583424
+MySQL thread id 9487298, query id 3918500726 10.124.62.97 ideeli
+---TRANSACTION 88D93A8E0, not started, process no 28529, OS thread id 140437789705984
+MySQL thread id 9487274, query id 3918542043 10.124.62.102 ideeli
+---TRANSACTION 88D93BD07, not started, process no 28529, OS thread id 140437823252224
+MySQL thread id 9487300, query id 3918542223 10.124.62.108 ideeli
+---TRANSACTION 88D93C1CA, not started, process no 28529, OS thread id 140437686699776
+MySQL thread id 9487088, query id 3918542113 10.124.62.103 ideeli
+---TRANSACTION 88D93C0DA, not started, process no 28529, OS thread id 140437788907264
+MySQL thread id 9487139, query id 3918541487 10.124.62.112 ideeli
+---TRANSACTION 88D93B22D, not started, process no 28529, OS thread id 140437573781248
+MySQL thread id 9487187, query id 3918540311 10.124.62.105 ideeli
+---TRANSACTION 88D93C286, not started, process no 28529, OS thread id 140437810738944
+MySQL thread id 9487290, query id 3918542357 10.124.62.89 ideeli
+---TRANSACTION 88D93800F, not started, process no 28529, OS thread id 140437693622016
+MySQL thread id 9487291, query id 3918542328 10.124.62.106 ideeli
+---TRANSACTION 88D93C13C, not started, process no 28529, OS thread id 140437676582656
+MySQL thread id 9487161, query id 3918541832 10.124.62.106 ideeli
+---TRANSACTION 88D93AFA7, not started, process no 28529, OS thread id 140437683504896
+MySQL thread id 9487286, query id 3918534474 10.124.62.91 ideeli
+---TRANSACTION 88D938280, not started, process no 28529, OS thread id 140437567657728
+MySQL thread id 9487287, query id 3918507507 10.124.62.98 ideeli
+---TRANSACTION 88D93C0D3, not started, process no 28529, OS thread id 140437576709888
+MySQL thread id 9487155, query id 3918542444 10.124.62.108 ideeli
+---TRANSACTION 88D93C26F, not started, process no 28529, OS thread id 140437572716288
+MySQL thread id 9487279, query id 3918542334 10.124.62.99 ideeli
+---TRANSACTION 88D9379D8, not started, process no 28529, OS thread id 140437839492864
+MySQL thread id 9487272, query id 3918504152 10.124.62.90 ideeli
+---TRANSACTION 88D93A946, not started, process no 28529, OS thread id 140437710128896
+MySQL thread id 9487259, query id 3918531417 10.124.62.89 ideeli
+---TRANSACTION 88D93BD30, not started, process no 28529, OS thread id 140437807810304
+MySQL thread id 9487257, query id 3918540303 10.124.62.97 ideeli
+---TRANSACTION 88D93A195, not started, process no 28529, OS thread id 140437578839808
+MySQL thread id 9487180, query id 3918541000 10.124.62.111 ideeli
+---TRANSACTION 88D939D52, not started, process no 28529, OS thread id 140437709596416
+MySQL thread id 9487248, query id 3918521978 10.124.62.99 ideeli
+---TRANSACTION 88D93C188, not started, process no 28529, OS thread id 140437811005184
+MySQL thread id 9487132, query id 3918541948 10.124.62.102 ideeli
+---TRANSACTION 88D93B06A, not started, process no 28529, OS thread id 140437706934016
+MySQL thread id 9487196, query id 3918541847 10.124.62.103 ideeli
+---TRANSACTION 88D935F42, not started, process no 28529, OS thread id 140437668062976
+MySQL thread id 9487240, query id 3918542410 10.124.62.105 ideeli
+---TRANSACTION 88D93C1B4, not started, process no 28529, OS thread id 140437835233024
+MySQL thread id 9487222, query id 3918542072 10.124.62.91 ideeli
+---TRANSACTION 88D93C1A4, not started, process no 28529, OS thread id 140437568190208
+MySQL thread id 9487082, query id 3918542032 10.124.62.107 ideeli
+---TRANSACTION 88D93C018, not started, process no 28529, OS thread id 140437810472704
+MySQL thread id 9487127, query id 3918541985 10.124.62.103 ideeli
+---TRANSACTION 88D93A59D, not started, process no 28529, OS thread id 140437709330176
+MySQL thread id 9487202, query id 3918528422 10.124.62.90 ideeli
+---TRANSACTION 88D93BDDB, not started, process no 28529, OS thread id 140437781186304
+MySQL thread id 9487192, query id 3918540513 10.124.62.90 ideeli
+---TRANSACTION 88D935C13, not started, process no 28529, OS thread id 140437806745344
+MySQL thread id 9487201, query id 3918541394 10.124.62.111 ideeli
+---TRANSACTION 88D93BFE4, not started, process no 28529, OS thread id 140437834700544
+MySQL thread id 9487197, query id 3918541863 10.124.62.104 ideeli
+---TRANSACTION 88D93AFAF, not started, process no 28529, OS thread id 140437800621824
+MySQL thread id 9487190, query id 3918534484 10.124.62.98 ideeli
+---TRANSACTION 88D93C2C7, not started, process no 28529, OS thread id 140437841090304
+MySQL thread id 9487181, query id 3918542422 10.124.62.89 ideeli
+---TRANSACTION 88D93C2C9, not started, process no 28529, OS thread id 140437705869056
+MySQL thread id 9487152, query id 3918542424 10.124.62.105 ideeli
+---TRANSACTION 88D93BDB1, not started, process no 28529, OS thread id 140437807011584
+MySQL thread id 9487104, query id 3918542052 10.124.62.107 ideeli
+---TRANSACTION 88D93B092, not started, process no 28529, OS thread id 140437704804096
+MySQL thread id 9487091, query id 3918542033 10.124.62.104 ideeli
+---TRANSACTION 88D939F73, not started, process no 28529, OS thread id 140437567923968
+MySQL thread id 9487138, query id 3918540724 10.124.62.104 ideeli
+---TRANSACTION 88D93C343, not started, process no 28529, OS thread id 140437564729088
+MySQL thread id 9487131, query id 3918542548 10.124.62.97 ideeli
+---TRANSACTION 88D93A97E, not started, process no 28529, OS thread id 140437686433536
+MySQL thread id 9487097, query id 3918531490 10.124.62.99 ideeli
+---TRANSACTION 88D93B122, not started, process no 28529, OS thread id 140437788641024
+MySQL thread id 9487098, query id 3918535173 10.124.62.91 ideeli
+---TRANSACTION 88D93AEDA, not started, process no 28529, OS thread id 140437809407744
+MySQL thread id 9487089, query id 3918540458 10.124.62.110 ideeli
+---TRANSACTION 88D93C363, not started, process no 28529, OS thread id 140437682439936
+MySQL thread id 9487080, query id 3918542583 10.124.62.98 ideeli
+---TRANSACTION 88D93C20A, not started, process no 28529, OS thread id 140437789439744
+MySQL thread id 7971336, query id 3918542212 localhost mkheartbeat
+---TRANSACTION 0, not started, process no 28529, OS thread id 140437915072256
+MySQL thread id 52627, query id 3918542210 Has read all relay log; waiting for the slave I/O thread to update it
+---TRANSACTION 88D93C212, ACTIVE 0 sec, process no 28529, OS thread id 140437677647616
+2 lock struct(s), heap size 376, 1 row lock(s)
+MySQL thread id 9655303, query id 3918542275 10.124.62.54 ideeli
+Trx read view will not see trx with id >= 88D93C215, sees < 88D93A2A6
+TABLE LOCK table `ideeli_production`.`orders` trx id 88D93C212 lock mode IX
+RECORD LOCKS space id 26100 page no 103516 n bits 160 index `PRIMARY` of table `ideeli_production`.`orders` trx id 88D93C212 lock_mode X locks rec but not gap
+---TRANSACTION 88D93C1A7, ACTIVE 1 sec, process no 28529, OS thread id 140437680310016
+2 lock struct(s), heap size 376, 1 row lock(s)
+MySQL thread id 9658483, query id 3918542042 10.124.62.54 ideeli
+TABLE LOCK table `ideeli_production`.`shipment_orders` trx id 88D93C1A7 lock mode IX
+RECORD LOCKS space id 26058 page no 41535 n bits 208 index `PRIMARY` of table `ideeli_production`.`shipment_orders` trx id 88D93C1A7 lock_mode X locks rec but not gap
+---TRANSACTION 88D93C198, ACTIVE 1 sec, process no 28529, OS thread id 140437696550656
+2 lock struct(s), heap size 376, 1 row lock(s)
+MySQL thread id 9642923, query id 3918542012 10.124.62.57 ideeli
+Trx read view will not see trx with id >= 88D93C199, sees < 88D93A2A6
+TABLE LOCK table `ideeli_production`.`orders` trx id 88D93C198 lock mode IX
+RECORD LOCKS space id 26100 page no 107015 n bits 152 index `PRIMARY` of table `ideeli_production`.`orders` trx id 88D93C198 lock_mode X locks rec but not gap
+---TRANSACTION 88D93BF29, ACTIVE 2 sec, process no 28529, OS thread id 140437666199296
+MySQL thread id 9570533, query id 3918541540 10.124.62.59 ideeli
+Trx read view will not see trx with id >= 88D93BF2A, sees < 88D93A2A6
+---TRANSACTION 88D93BE0F, ACTIVE 2 sec, process no 28529, OS thread id 140437704537856
+2 lock struct(s), heap size 376, 1 row lock(s), undo log entries 1
+MySQL thread id 9582907, query id 3918541959 10.124.62.55 ideeli
+Trx read view will not see trx with id >= 88D93BE10, sees < 88D93A2A6
+TABLE LOCK table `ideeli_production`.`skus` trx id 88D93BE0F lock mode IX
+RECORD LOCKS space id 26132 page no 20446 n bits 168 index `PRIMARY` of table `ideeli_production`.`skus` trx id 88D93BE0F lock_mode X locks rec but not gap
+---TRANSACTION 88D93BD89, ACTIVE 3 sec, process no 28529, OS thread id 140437822187264
+19 lock struct(s), heap size 3112, 16 row lock(s), undo log entries 27
+MySQL thread id 9561999, query id 3918541820 10.124.62.57 ideeli
+Trx read view will not see trx with id >= 88D93BD8A, sees < 88D93A2A6
+TABLE LOCK table `ideeli_production`.`orders` trx id 88D93BD89 lock mode IX
+RECORD LOCKS space id 26100 page no 110686 n bits 160 index `PRIMARY` of table `ideeli_production`.`orders` trx id 88D93BD89 lock_mode X locks rec but not gap
+TABLE LOCK table `ideeli_production`.`sku_units` trx id 88D93BD89 lock mode IX
+RECORD LOCKS space id 26161 page no 84766 n bits 1248 index `sku_units_line_item_id_index` of table `ideeli_production`.`sku_units` trx id 88D93BD89 lock_mode X
+RECORD LOCKS space id 26161 page no 42422 n bits 336 index `PRIMARY` of table `ideeli_production`.`sku_units` trx id 88D93BD89 lock_mode X locks rec but not gap
+TABLE LOCK table `ideeli_production`.`sku_unit_events` trx id 88D93BD89 lock mode IX
+TABLE LOCK table `ideeli_production`.`audits` trx id 88D93BD89 lock mode IX
+TABLE LOCK table `ideeli_production`.`line_items` trx id 88D93BD89 lock mode IX
+RECORD LOCKS space id 26179 page no 142979 n bits 152 index `PRIMARY` of table `ideeli_production`.`line_items` trx id 88D93BD89 lock_mode X locks rec but not gap
+TABLE LOCK table `ideeli_production`.`order_events` trx id 88D93BD89 lock mode IX
+TOO MANY LOCKS PRINTED FOR THIS TRX: SUPPRESSING FURTHER PRINTS
+---TRANSACTION 88D93B982, ACTIVE 4 sec, process no 28529, OS thread id 140437814200064
+2 lock struct(s), heap size 376, 1 row lock(s)
+MySQL thread id 9646099, query id 3918542023 10.124.62.57 ideeli
+Trx read view will not see trx with id >= 88D93BB48, sees < 88D9399B3
+TABLE LOCK table `ideeli_production`.`shipment_orders` trx id 88D93B982 lock mode IX
+RECORD LOCKS space id 26058 page no 41534 n bits 216 index `PRIMARY` of table `ideeli_production`.`shipment_orders` trx id 88D93B982 lock_mode X locks rec but not gap
+---TRANSACTION 88D93B93B, ACTIVE 4 sec, process no 28529, OS thread id 140437689095936
+2 lock struct(s), heap size 376, 1 row lock(s)
+MySQL thread id 9563438, query id 3918540756 10.124.62.59 ideeli
+Trx read view will not see trx with id >= 88D93B93C, sees < 88D9399B3
+TABLE LOCK table `ideeli_production`.`ns_sync_requests` trx id 88D93B93B lock mode IX
+RECORD LOCKS space id 25732 page no 1756 n bits 216 index `PRIMARY` of table `ideeli_production`.`ns_sync_requests` trx id 88D93B93B lock_mode X locks rec but not gap
+---TRANSACTION 88D93B8CB, ACTIVE 4 sec, process no 28529, OS thread id 140437707466496
+2 lock struct(s), heap size 376, 1 row lock(s)
+MySQL thread id 9563510, query id 3918538478 10.124.62.57 ideeli
+Trx read view will not see trx with id >= 88D93B8CD, sees < 88D9399B3
+TABLE LOCK table `ideeli_production`.`product_analytics` trx id 88D93B8CB lock mode IX
+RECORD LOCKS space id 26126 page no 166 n bits 160 index `PRIMARY` of table `ideeli_production`.`product_analytics` trx id 88D93B8CB lock_mode X locks rec but not gap
+---TRANSACTION 88D93B32D, ACTIVE 6 sec, process no 28529, OS thread id 140437685634816
+2 lock struct(s), heap size 376, 1 row lock(s)
+MySQL thread id 9562462, query id 3918541817 10.124.62.54 ideeli
+Trx read view will not see trx with id >= 88D93B330, sees < 88D9399B3
+TABLE LOCK table `ideeli_production`.`product_analytics` trx id 88D93B32D lock mode IX
+RECORD LOCKS space id 26126 page no 845 n bits 152 index `PRIMARY` of table `ideeli_production`.`product_analytics` trx id 88D93B32D lock_mode X locks rec but not gap
+---TRANSACTION 88D93A2A6, ACTIVE 13 sec, process no 28529, OS thread id 140437704271616
+MySQL thread id 9563806, query id 3918540982 10.124.62.55 ideeli
+Trx read view will not see trx with id >= 88D93A2A7, sees < 88D938B35
+----------------------------
+END OF INNODB MONITOR OUTPUT
+============================
+

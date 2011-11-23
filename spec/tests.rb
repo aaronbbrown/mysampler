@@ -1,23 +1,32 @@
+require 'pp'
 require 'timecop'
 require 'mysqlsampler'
-
+require 'innodbstatus'
 
 describe "database connectivity" do
   before(:all) do
-    @ms = MySQLSampler.new
-    @ms.user     = "aaron"
-    @ms.pass     = "n0m0r3181"
-    @ms.host     = "locutus.borg.lan"
-    @ms.port     = 3306
-    @ms.db_connect
+    @host = "locutus.borg.lan"
+
+    @db = MySQLSampler::Connection.new( :user => "aaron",
+                                        :pass => "n0m0r3181",
+                                        :host => @host,
+                                        :port => 3306 )
+    @ms = MySQLSampler::MySQLSampler.new
+    @ms.connection = @db
+
+    @status  = MySQLSampler::QueryHash.new( :query       => "SHOW GLOBAL STATUS",       
+                              :connection  => @db,
+                              :keycolumn   => :Variable_name, 
+                              :valuecolumn => :Value, 
+                              :key_prefix  => "status.")
   end
 
   it "should return 'locutus.borg.lan'" do
-    @ms.get_mysql_hostname.should == @ms.host 
+    @db.get_mysql_hostname.should == @host
   end
 
   it "should return an array that includes 'Uptime'" do
-    @ms.get_header_rows.should include('Uptime')
+    @status.get_header_rows.should include('status.Uptime')
   end
 
 end
@@ -25,7 +34,7 @@ end
 describe "Row operations" do
   before(:all) do
     Timecop.freeze(Time.local(2011,10,17,0,0,0))
-    @ms = MySQLSampler.new
+    @ms = MySQLSampler::MySQLSampler.new
   end
 
   after(:all) do
@@ -62,4 +71,16 @@ describe "Row operations" do
     @ms.hash_to_csv(h).should == "2011-10-17 00:00:00,1,2,foo"
   end
 
+end
+
+
+describe "INNODB STATUS Parser" do
+  before(:all) do
+    @is = MySQLSampler::InnoDBStatusHash.new
+    @data = IO.read(File.dirname(__FILE__)+"/innodbstatus.txt")
+  end
+  
+  it "should return a hash w/ multiple keys" do
+    MySQLSampler::InnoDBStatusParser.sections(@data).keys.should include('TRANSACTIONS')
+  end
 end
