@@ -78,9 +78,22 @@ describe "INNODB STATUS Parser" do
   before(:all) do
     @is = MySQLSampler::InnoDBStatusHash.new
     @data = IO.read(File.dirname(__FILE__)+"/innodbstatus.txt")
+    @sections = MySQLSampler::InnoDBStatusParser.sections(@data)
   end
   
   it "should return a hash w/ multiple keys" do
-    MySQLSampler::InnoDBStatusParser.sections(@data).keys.should include('TRANSACTIONS')
+    @sections.keys.should include('TRANSACTIONS')
+  end
+
+  it "should return a hash w/ a key named srv_master_thread_loops.1_second" do
+    MySQLSampler::InnoDBStatusParser.parse_background_thread(@sections["BACKGROUND THREAD"]).keys.should include("srv_master_thread_loops.1_second")
+  end
+
+  it "should return a hash w/ a key named mutex.os_waits" do
+    MySQLSampler::InnoDBStatusParser.parse_semaphores(@sections["SEMAPHORES"]).keys.should include("mutex.os_waits")
+  end
+
+  it "semaphores should have 12 keys" do
+    MySQLSampler::InnoDBStatusParser.parse_semaphores(@sections["SEMAPHORES"]).keys.size.should == 12
   end
 end
