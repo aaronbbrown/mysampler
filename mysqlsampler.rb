@@ -75,10 +75,33 @@ class MySQLSampler
     @rf = @outputfn ? FileRotating.new(params, @outputfn, "w") : STDOUT
   end
 
+  def is_counter? (key)
+    # list lovingly stolen from pt-mysql-summary
+    !%w[ Compression Delayed_insert_threads Innodb_buffer_pool_pages_data 
+         Innodb_buffer_pool_pages_dirty Innodb_buffer_pool_pages_free 
+         Innodb_buffer_pool_pages_latched Innodb_buffer_pool_pages_misc 
+         Innodb_buffer_pool_pages_total Innodb_data_pending_fsyncs 
+         Innodb_data_pending_reads Innodb_data_pending_writes 
+         Innodb_os_log_pending_fsyncs Innodb_os_log_pending_writes 
+         Innodb_page_size Innodb_row_lock_current_waits Innodb_row_lock_time_avg 
+         Innodb_row_lock_time_max Key_blocks_not_flushed Key_blocks_unused 
+         Key_blocks_used Last_query_cost Max_used_connections Ndb_cluster_node_id 
+         Ndb_config_from_host Ndb_config_from_port Ndb_number_of_data_nodes 
+         Not_flushed_delayed_rows Open_files Open_streams Open_tables 
+         Prepared_stmt_count Qcache_free_blocks Qcache_free_memory 
+         Qcache_queries_in_cache Qcache_total_blocks Rpl_status 
+         Slave_open_temp_tables Slave_running Ssl_cipher Ssl_cipher_list 
+         Ssl_ctx_verify_depth Ssl_ctx_verify_mode Ssl_default_timeout 
+         Ssl_session_cache_mode Ssl_session_cache_size Ssl_verify_depth 
+         Ssl_verify_mode Ssl_version Tc_log_max_pages_used Tc_log_page_size 
+         Threads_cached Threads_connected Threads_running 
+         Uptime_since_flush_status ].include? key
+  end
+
   def calc_relative(rows)
     result = {}
     rows.each do |k,v|
-      if @prev_rows[k] && numeric?(v)
+      if @prev_rows[k] && numeric?(v) && !is_counter?(k)
         result[k] = v - @prev_rows[k]
       else 
         result[k] = v
