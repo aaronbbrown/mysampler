@@ -101,7 +101,7 @@ class MySQLSampler
   def calc_relative(rows)
     result = {}
     rows.each do |k,v|
-      if @prev_rows[k] && numeric?(v) && !is_counter?(k)
+      if @prev_rows[k] && numeric?(v) && is_counter?(k)
         result[k] = v - @prev_rows[k]
       else 
         result[k] = v
