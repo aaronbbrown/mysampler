@@ -13,7 +13,7 @@ class MySQLSampler
     @port           = 3306
     @socket         = nil
     @host           = "localhost"
-    @query          = "SHOW GLOBAL STATUS"
+    @query          = 'SHOW /*!50002 GLOBAL */ STATUS'
     @interval       = 10
     @relative       = false
     @output         = CSVOUT
