@@ -97,7 +97,13 @@ class MySQLSampler
   end
 
   def to_numeric (value)
-    numeric?(value) ? value.to_i : value
+    numeric?(value) ? scale_value(value.to_i) : value
+  end
+
+  # scale the value to be per @interval if recording relative values
+  # since it doesn't make much sense to output values that are "per 5 seconds"
+  def scale_value (value)
+    @relative ? (value/@interval) : value
   end
   
   def values_to_numeric ( h )
