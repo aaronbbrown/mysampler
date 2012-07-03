@@ -42,6 +42,7 @@ class MySQLSampler
         rows = @sequel[@query].to_hash(:Variable_name,:Value)
         rows = values_to_numeric(rows)
         rows = calc_relative(rows) if @relative
+        rows = scale_values(rows) 
         output_query(rows) unless first_run && @relative
         first_run = false
       rescue Exception => e
@@ -120,13 +121,19 @@ class MySQLSampler
   end
 
   def to_numeric (value)
-    numeric?(value) ? scale_value(value.to_i) : value
+    numeric?(value) ? value.to_i : value
   end
 
   # scale the value to be per @interval if recording relative values
   # since it doesn't make much sense to output values that are "per 5 seconds"
   def scale_value (value)
-    @relative ? (value/@interval) : value
+    (@relative && numeric?(value)) ? (value/@interval) : value
+  end
+  
+  def scale_values ( rows )
+    Hash[h.map do |k,v| 
+      is_counter?(k) ? [k, scale_value(v)] : [k, v]
+    end]  
   end
   
   def values_to_numeric ( h )
