@@ -131,7 +131,7 @@ class MySQLSampler
   end
   
   def scale_values ( rows )
-    Hash[h.map do |k,v| 
+    Hash[rows.map do |k,v| 
       is_counter?(k) ? [k, scale_value(v)] : [k, v]
     end]  
   end
