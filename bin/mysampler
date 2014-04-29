@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 
-require_relative '../lib/mysampler'
+$LOAD_PATH.unshift File.join(File.dirname(__FILE__), '..', 'lib')
+require 'mysampler'
 require 'optparse'
 require 'sequel'
 require 'logger'

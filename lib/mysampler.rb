@@ -1,4 +1,4 @@
-require_relative 'mysampler/client'
-require_relative 'mysampler/file'
-require_relative 'mysampler/processctl'
-require_relative 'mysampler/version'
+require 'mysampler/client'
+require 'mysampler/file'
+require 'mysampler/processctl'
+require 'mysampler/version'
