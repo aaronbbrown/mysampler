@@ -1,6 +1,7 @@
 #!/usr/bin/ruby
 
 require 'yaml'
+module MySampler
 
 class FileRotating
   YEAR, MONTH, DAY, HOUR, MINUTE, SECOND = 0,1,2,3,4,5
@@ -85,3 +86,5 @@ end
 #    sleep 1
 #  end
 #end
+
+end

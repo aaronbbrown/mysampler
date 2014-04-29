@@ -1,10 +1,7 @@
 #!/usr/bin/env ruby
 
+require_relative '../lib/mysampler'
 require 'optparse'
-require File.dirname(__FILE__) + '/processctl.rb'
-require File.dirname(__FILE__) + '/mysqlsampler.rb'
-require File.dirname(__FILE__) + '/file.rb'
-require 'rubygems'
 require 'sequel'
 require 'logger'
 
@@ -16,8 +13,8 @@ $options = { :dbuser    => nil,
              :daemonize => false,
              :pidfile   => Dir.pwd + "/mysample.pid",
              :interval  => 10, #seconds
-             :command   => ProcessCtl::STARTCMD ,
-             :output    => MySQLSampler::CSVOUT,
+             :command   => MySampler::ProcessCtl::STARTCMD ,
+             :output    => MySampler::Client::CSVOUT,
              :relative  => false,
              :graphitehost => nil, }
 
@@ -32,12 +29,12 @@ opts.on("-f", "--file FILENAME", String,  "output filename (will be appended wit
 opts.on("-o", "--output (csv|graphite)", String, "Output format (default: csv)" ) do |v| 
   $options[:output] = case v
     when "yaml"
-      MySQLSampler::YAMLOUT
+      MySampler::Client::YAMLOUT
     when "csv"
-      MySQLSampler::CSVOUT
+      MySampler::Client::CSVOUT
     when "graphite"
       require 'graphite/logger'
-      MySQLSampler::GRAPHITEOUT
+      MySampler::Client::GRAPHITEOUT
     else
       puts opts
       exit 1
@@ -49,11 +46,11 @@ opts.on("-d", "--daemonize", "daemonize process (default: #{$options[:daemonize]
 opts.on("-k", "--command (start|stop|status)", String, "command to pass daemon") do |v|
   $options[:command] = case v
     when "stop"
-      ProcessCtl::STOPCMD
+      MySampler::ProcessCtl::STOPCMD
     when "status"
-      ProcessCtl::STATUSCMD
+      MySampler::ProcessCtl::STATUSCMD
     when "start"
-      ProcessCtl::STARTCMD
+      MySampler::ProcessCtl::STARTCMD
     else
       puts opts
       exit 1
@@ -63,12 +60,12 @@ opts.on("-g", "--graphite HOST:PORT", String, "Graphite server:port") { |v| $opt
 opts.on("-h", "--help",  "this message") { puts opts; exit 1}
 opts.parse!
 
-pc = ProcessCtl.new
+pc = MySampler::ProcessCtl.new
 pc.daemonize = $options[:daemonize]
 pc.pidfile   = $options[:pidfile]
 
 
-ms = MySQLSampler.new
+ms = MySampler::Client.new
 ms.user     = $options[:dbuser]
 ms.pass     = $options[:dbpass]
 ms.host     = $options[:dbhost]
@@ -78,13 +75,13 @@ ms.interval = $options[:interval]
 ms.output   = $options[:output]
 ms.relative = $options[:relative]
 ms.outputfn = $options[:outputfn] if $options[:outputfn]
-ms.rotateinterval = FileRotating::HOUR
-ms.graphitehost = $options[:graphitehost] if ms.output == MySQLSampler::GRAPHITEOUT
+ms.rotateinterval = MySampler::FileRotating::HOUR
+ms.graphitehost = $options[:graphitehost] if ms.output == MySampler::Client::GRAPHITEOUT
 
 case $options[:command]
-when ProcessCtl::STOPCMD
+when MySampler::ProcessCtl::STOPCMD
   pc.stop { puts "I'm done" }
-when ProcessCtl::STATUSCMD
+when MySampler::ProcessCtl::STATUSCMD
   exit pc.status
 else
   exit pc.start { ms.run }

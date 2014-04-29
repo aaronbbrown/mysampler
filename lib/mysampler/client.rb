@@ -1,9 +1,7 @@
-require 'rubygems'
 require 'sequel'
 
-require File.dirname(__FILE__) + '/file.rb'
-
-class MySQLSampler
+module MySampler
+class Client
   CSVOUT, YAMLOUT,GRAPHITEOUT = 0,1,2
   attr_accessor :user, :pass, :port, :socket, :host, :interval, :output, :relative, :outputfn, :rotateinterval, :graphitehost
 
@@ -169,4 +167,4 @@ class MySQLSampler
   end
 end
 
-
+end

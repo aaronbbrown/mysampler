@@ -1,3 +1,4 @@
+module MySampler
 class ProcessCtl
   STARTCMD, STOPCMD, STATUSCMD = 0,1,2
 
@@ -87,4 +88,5 @@ protected
     end
     return result
   end
+end
 end
